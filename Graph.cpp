@@ -75,6 +75,17 @@ void Graph::visualizeNetwork()
     }
 }
 
+void Graph::visualizeSignals()
+{
+    for( int i = 0 ; i < MAX_INTERSECTIONS; i++)
+    {
+        if(intersections[i])
+        {
+            std::cout << intersections[i]->name << " -> " << intersections[i]->greenTime << "s" << std::endl;
+        }
+    }
+}
+
 // Create intersections from a CSV file
 void Graph::createIntersections(const std::string &fileName)
 {

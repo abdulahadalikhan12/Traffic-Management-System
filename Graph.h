@@ -41,6 +41,7 @@ public:
     Intersection *findIntersection(char name);
     void addRoad(char from, char to, int travelTime);
     void visualizeNetwork();
+    void visualizeSignals();
     void createIntersections(const std::string &fileName);
     void createNetwork(const std::string &fileName);
 };

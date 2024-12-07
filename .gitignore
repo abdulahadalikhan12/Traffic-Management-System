@@ -32,4 +32,6 @@
 *.app
 *.Identifier
 test.cpp
-traffic_system
+
+# Data Sets
+*.csv
