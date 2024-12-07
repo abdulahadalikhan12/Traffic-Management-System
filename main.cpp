@@ -13,5 +13,7 @@ int main()
     graph.visualizeNetwork();
     graph.visualizeSignals();
 
+    graph.dijkstra('A', 'E');
+
     return 0;
 }

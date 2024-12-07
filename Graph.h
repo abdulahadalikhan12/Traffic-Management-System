@@ -44,6 +44,7 @@ public:
     void visualizeSignals();
     void createIntersections(const std::string &fileName);
     void createNetwork(const std::string &fileName);
+    void dijkstra(char start, char end);
 };
 
 #endif // GRAPH_H
