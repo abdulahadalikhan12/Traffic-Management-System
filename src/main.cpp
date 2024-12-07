@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "Graph.h"
+#include "../src/Graph.h"
 using namespace std;
 
 // global instance of graph to keep track of all changes
@@ -10,8 +10,8 @@ Graph graph;
 int main()
 {
     int choice = 0;
-    graph.createIntersections("traffic_signals.csv");
-    graph.createNetwork("road_network.csv");
+    graph.createIntersections("../data/traffic_signals.csv");
+    graph.createNetwork("../data/road_network.csv");
 
     while(choice != 8)
     {

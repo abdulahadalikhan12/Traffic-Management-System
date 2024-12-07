@@ -1,4 +1,4 @@
-#include "MinHeap.h"
+#include "../src/MinHeap.h"
 
 MinHeap::MinHeap(int cap) : size(0), capacity(cap)
 {
