@@ -77,6 +77,72 @@ public:
         return nullptr; // Intersection not found
     }
 
+    void removeIntersection(char name)
+    {
+        Intersection *prev = nullptr;
+        Intersection *curr = intersections;
+
+        // find the one to remove
+        while (curr)
+        {
+            if (curr->name == name)
+            {
+                // delete all roads associated with this intersection
+                Road *road = curr->roads;
+                while (road)
+                {
+                    Road *temp = road;
+                    road = road->next;
+                    delete temp;
+                }
+
+                // remove the roads from other intersections that point to this one
+                Intersection *temp = intersections;
+                while (temp)
+                {
+                    Road *prevRoad = nullptr;
+                    Road *currRoad = temp->roads;
+                    while (currRoad)
+                    {
+                        if (currRoad->dest == name)
+                        {
+                            if (prevRoad)
+                            {
+                                prevRoad->next = currRoad->next;
+                            }
+                            else
+                            {
+                                temp->roads = currRoad->next;
+                            }
+                            delete currRoad;
+                            break;
+                        }
+                        prevRoad = currRoad;
+                        currRoad = currRoad->next;
+                    }
+                    temp = temp->next;
+                }
+
+                if (prev)
+                {
+                    prev->next = curr->next;
+                }
+                else
+                {
+                    intersections = curr->next;
+                }
+
+                delete curr; // delete the intersection node
+                return;
+            }
+
+            prev = curr;
+            curr = curr->next;
+        }
+
+        cout << "Intersection " << name << " not found!" << endl;
+    }
+
     // add a road between two intersections
     void addRoad(char from, char to, int travelTime)
     {
@@ -216,5 +282,106 @@ public:
         }
 
         file.close();
+    }
+
+    int getIntersectionCount()
+    {
+        int count = 0;
+        Intersection *current = intersections;
+        while (current)
+        {
+            count++;
+            current = current->next;
+        }
+        return count;
+    }
+
+    int getRoadCount()
+    {
+        int count = 0;
+        Intersection *current = intersections;
+        while (current)
+        {
+            Road *road = current->roads;
+            while (road)
+            {
+                count++;
+                road = road->next;
+            }
+            current = current->next;
+        }
+        return count;
+    }
+
+    Intersection *detectDeadEnd()
+    {
+        Intersection *temp = intersections;
+        while (temp)
+        {
+            if (!temp->roads)
+            {
+                return temp;
+            }
+            temp = temp->next;
+        }
+    }
+
+    bool isNetworkConnected()
+    {
+        if (!intersections)
+        {
+            return false;
+        }
+
+        Intersection *current = intersections;
+        while (current)
+        {
+            if (!current->roads)
+            {
+                return false;
+            }
+            current = current->next;
+        }
+        return true;
+    }
+
+    Intersection *maxGreenTime()
+    {
+        if (intersections == nullptr)
+        {
+            return nullptr;
+        }
+
+        Intersection *max = intersections;
+        Intersection *current = intersections->next;
+        while (current)
+        {
+            if (current->greenTime > max->greenTime)
+            {
+                max = current;
+            }
+            current = current->next;
+        }
+        return max;
+    }
+
+    Intersection *minGreenTime()
+    {
+        if (intersections == nullptr)
+        {
+            return nullptr;
+        }
+
+        Intersection *min = intersections;
+        Intersection *current = intersections->next;
+        while (current)
+        {
+            if (current->greenTime < min->greenTime)
+            {
+                min = current;
+            }
+            current = current->next;
+        }
+        return min;
     }
 };
