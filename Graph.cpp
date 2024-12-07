@@ -1,6 +1,4 @@
 #include "Graph.h"
-#include <iostream>
-#include <sstream>
 
 Road::Road(char dest, int travelTime)
     : dest(dest), travelTime(travelTime), next(nullptr) {}
@@ -8,104 +6,42 @@ Road::Road(char dest, int travelTime)
 Intersection::Intersection(char name, int greenTime)
     : name(name), greenTime(greenTime), roads(nullptr), next(nullptr) {}
 
-Graph::Graph() : intersections(nullptr) {}
+Graph::Graph()
+{
+    for (int i = 0; i < MAX_INTERSECTIONS; ++i)
+    {
+        intersections[i] = nullptr;
+    }
+}
 
+// add a new intersection
 void Graph::addIntersection(char name, int greenTime)
 {
-    Intersection *newIntersection = new Intersection(name, greenTime);
-
-    if (!intersections)
+    int index = name - 'A'; // Map 'A' to 0, 'B' to 1, ..., 'Z' to 25
+    if (index < 0 || index >= MAX_INTERSECTIONS)
     {
-        intersections = newIntersection;
+        std::cout << "Invalid intersection name!" << std::endl;
+        return;
     }
-    else
+
+    if (intersections[index] == nullptr)
     {
-        Intersection *current = intersections;
-        while (current->next)
-        {
-            current = current->next;
-        }
-        current->next = newIntersection;
+        intersections[index] = new Intersection(name, greenTime);
     }
 }
 
+// find an intersection by its name
 Intersection *Graph::findIntersection(char name)
 {
-    Intersection *current = intersections;
-    while (current)
+    int index = name - 'A'; // Map 'A' to 0, 'B' to 1, ..., 'Z' to 25
+    if (index < 0 || index >= MAX_INTERSECTIONS)
     {
-        if (current->name == name)
-        {
-            return current;
-        }
-        current = current->next;
+        return nullptr;
     }
-    return nullptr;
+    return intersections[index];
 }
 
-void Graph::removeIntersection(char name)
-{
-    Intersection *prev = nullptr;
-    Intersection *curr = intersections;
-
-    while (curr)
-    {
-        if (curr->name == name)
-        {
-            Road *road = curr->roads;
-            while (road)
-            {
-                Road *temp = road;
-                road = road->next;
-                delete temp;
-            }
-
-            Intersection *temp = intersections;
-            while (temp)
-            {
-                Road *prevRoad = nullptr;
-                Road *currRoad = temp->roads;
-                while (currRoad)
-                {
-                    if (currRoad->dest == name)
-                    {
-                        if (prevRoad)
-                        {
-                            prevRoad->next = currRoad->next;
-                        }
-                        else
-                        {
-                            temp->roads = currRoad->next;
-                        }
-                        delete currRoad;
-                        break;
-                    }
-                    prevRoad = currRoad;
-                    currRoad = currRoad->next;
-                }
-                temp = temp->next;
-            }
-
-            if (prev)
-            {
-                prev->next = curr->next;
-            }
-            else
-            {
-                intersections = curr->next;
-            }
-
-            delete curr;
-            return;
-        }
-
-        prev = curr;
-        curr = curr->next;
-    }
-
-    std::cout << "Intersection " << name << " not found!" << std::endl;
-}
-
+// add a road between two intersections
 void Graph::addRoad(char from, char to, int travelTime)
 {
     Intersection *fromIntersection = findIntersection(from);
@@ -116,90 +52,30 @@ void Graph::addRoad(char from, char to, int travelTime)
     }
 
     Road *newRoad = new Road(to, travelTime);
-
-    if (!fromIntersection->roads)
-    {
-        fromIntersection->roads = newRoad;
-    }
-    else
-    {
-        Road *current = fromIntersection->roads;
-        while (current->next)
-        {
-            current = current->next;
-        }
-        current->next = newRoad;
-    }
+    newRoad->next = fromIntersection->roads;
+    fromIntersection->roads = newRoad;
 }
 
-void Graph::removeRoad(char from, char to)
-{
-    Intersection *fromIntersection = findIntersection(from);
-    if (!fromIntersection)
-        return;
-
-    Road *prev = nullptr;
-    Road *curr = fromIntersection->roads;
-    while (curr)
-    {
-        if (curr->dest == to)
-        {
-            if (prev)
-            {
-                prev->next = curr->next;
-            }
-            else
-            {
-                fromIntersection->roads = curr->next;
-            }
-            delete curr;
-            return;
-        }
-        prev = curr;
-        curr = curr->next;
-    }
-}
-
-void Graph::setGreenTime(char name, int greenTime)
-{
-    Intersection *intersection = findIntersection(name);
-    if (intersection)
-    {
-        intersection->greenTime = greenTime;
-    }
-    else
-    {
-        std::cout << "Intersection not found!" << std::endl;
-    }
-}
-
+// Visualize the city traffic network (intersection names and their roads)
 void Graph::visualizeNetwork()
 {
-    Intersection *current = intersections;
-    while (current)
+    for (int i = 0; i < MAX_INTERSECTIONS; ++i)
     {
-        std::cout << current->name << " -> ";
-        Road *road = current->roads;
-        while (road)
+        if (intersections[i])
         {
-            std::cout << "(" << road->dest << ", " << road->travelTime << "s) ";
-            road = road->next;
+            std::cout << intersections[i]->name << " -> ";
+            Road *road = intersections[i]->roads;
+            while (road)
+            {
+                std::cout << "(" << road->dest << ", " << road->travelTime << "s) ";
+                road = road->next;
+            }
+            std::cout << std::endl;
         }
-        std::cout << std::endl;
-        current = current->next;
     }
 }
 
-void Graph::visualizeSignals()
-{
-    Intersection *current = intersections;
-    while (current)
-    {
-        std::cout << "Intersection " << current->name << " Green Time -> " << current->greenTime << "s" << std::endl;
-        current = current->next;
-    }
-}
-
+// Create intersections from a CSV file
 void Graph::createIntersections(const std::string &fileName)
 {
     std::ifstream file(fileName);
@@ -223,6 +99,7 @@ void Graph::createIntersections(const std::string &fileName)
     file.close();
 }
 
+// Create roads between intersections from a CSV file
 void Graph::createNetwork(const std::string &fileName)
 {
     std::ifstream file(fileName);
@@ -244,106 +121,4 @@ void Graph::createNetwork(const std::string &fileName)
     }
 
     file.close();
-}
-
-int Graph::getIntersectionCount()
-{
-    int count = 0;
-    Intersection *current = intersections;
-    while (current)
-    {
-        count++;
-        current = current->next;
-    }
-    return count;
-}
-
-int Graph::getRoadCount()
-{
-    int count = 0;
-    Intersection *current = intersections;
-    while (current)
-    {
-        Road *road = current->roads;
-        while (road)
-        {
-            count++;
-            road = road->next;
-        }
-        current = current->next;
-    }
-    return count;
-}
-
-Intersection *Graph::detectDeadEnd()
-{
-    Intersection *temp = intersections;
-    while (temp)
-    {
-        if (!temp->roads)
-        {
-            return temp;
-        }
-        temp = temp->next;
-    }
-    return nullptr;
-}
-
-bool Graph::isNetworkConnected()
-{
-    if (!intersections)
-    {
-        return false;
-    }
-
-    Intersection *current = intersections;
-    while (current)
-    {
-        if (!current->roads)
-        {
-            return false;
-        }
-        current = current->next;
-    }
-    return true;
-}
-
-Intersection *Graph::maxGreenTime()
-{
-    if (!intersections)
-    {
-        return nullptr;
-    }
-
-    Intersection *max = intersections;
-    Intersection *current = intersections->next;
-    while (current)
-    {
-        if (current->greenTime > max->greenTime)
-        {
-            max = current;
-        }
-        current = current->next;
-    }
-    return max;
-}
-
-Intersection *Graph::minGreenTime()
-{
-    if (!intersections)
-    {
-        return nullptr;
-    }
-
-    Intersection *min = intersections;
-    Intersection *current = intersections->next;
-    while (current)
-    {
-        if (current->greenTime < min->greenTime)
-        {
-            min = current;
-        }
-        current = current->next;
-    }
-    return min;
 }
