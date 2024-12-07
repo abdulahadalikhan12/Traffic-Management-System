@@ -13,7 +13,7 @@ int main()
     graph.createIntersections("../data/traffic_signals.csv");
     graph.createNetwork("../data/road_network.csv");
 
-    while(choice != 8)
+    /*while(choice != 8)
     {
         cout<< "------ Allah MashAllah Traffic Simulator ------\n";
         cout << "1. Display City Traffic Network\n";
@@ -58,8 +58,13 @@ int main()
                 cout << "Invalid Choice\n";
         }
 
-    }
-    
+    }*/
+
+    graph.visualizeNetwork();
+    graph.visualizeSignals();
+
+    graph.simulateRoadClosure("../data/road_closures.csv");
+
     graph.dijkstra('A', 'E');
 
     return 0;

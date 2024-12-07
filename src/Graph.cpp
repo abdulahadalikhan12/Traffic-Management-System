@@ -260,19 +260,19 @@ void Graph::updateRoadStatus(char start, char end, std::string status)
                 if (status == "Clear")
                 {
                     temp->status = 1;
-                    std::cout << "New Status for " << start << " -> " << end << " = Clear";
+                    std::cout << "New Status for " << start << " -> " << end << " = Clear\n";
                 }
 
                 else if (status == "Blocked")
                 {
                     temp->status = 2;
-                    std::cout << "New Status for " << start << " -> " << end << " = Blocked";
+                    std::cout << "New Status for " << start << " -> " << end << " = Blocked\n";
                 }
 
-                else if (status == "Under Repair")
+                else if (status == "Under")
                 {
                     temp->status = 3;
-                    std::cout << "New Status for " << start << " -> " << end << " = Under Repair";
+                    std::cout << "New Status for " << start << " -> " << end << " = Under Repair\n";
                 }
                 return;
             }
