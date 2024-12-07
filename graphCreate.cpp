@@ -35,7 +35,7 @@ struct Intersection
 
 class Graph
 {
-    Intersection *intersections; //head of the list of intersections
+    Intersection *intersections; // head of the list of intersections
 
 public:
     Graph() : intersections(nullptr) {}
@@ -44,8 +44,22 @@ public:
     void addIntersection(char name, int greenTime = 0)
     {
         Intersection *newIntersection = new Intersection(name, greenTime);
-        newIntersection->next = intersections;
-        intersections = newIntersection;
+
+        // if the list is empty, the new intersection becomes the head
+        if (!intersections)
+        {
+            intersections = newIntersection;
+        }
+        else
+        {
+            // otherwise, traverse to the end of the list and append the new intersection
+            Intersection *current = intersections;
+            while (current->next)
+            {
+                current = current->next;
+            }
+            current->next = newIntersection;
+        }
     }
 
     // find an intersection by its name
@@ -69,14 +83,27 @@ public:
         Intersection *fromIntersection = findIntersection(from);
         if (!fromIntersection)
         {
-            addIntersection(from); // Add intersection if not already present
+            addIntersection(from); // add intersection if not already present
             fromIntersection = findIntersection(from);
         }
 
-        // add the road to the adjacency list (linked list of roads)
         Road *newRoad = new Road(to, travelTime);
-        newRoad->next = fromIntersection->roads;
-        fromIntersection->roads = newRoad;
+
+        // if there are no roads, the new road is the first one
+        if (!fromIntersection->roads)
+        {
+            fromIntersection->roads = newRoad;
+        }
+        else
+        {
+            // otherwise, traverse to the end of the list of roads and append the new road
+            Road *current = fromIntersection->roads;
+            while (current->next)
+            {
+                current = current->next;
+            }
+            current->next = newRoad;
+        }
     }
 
     // remove a road between two intersections
@@ -190,5 +217,4 @@ public:
 
         file.close();
     }
-    
 };
