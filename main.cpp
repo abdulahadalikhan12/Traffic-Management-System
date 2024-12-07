@@ -10,7 +10,8 @@ int main()
     graph.createIntersections("traffic_signals.csv");
     graph.createNetwork("road_network.csv");
 
-    graph.visualize();
+    graph.visualizeNetwork();
+    graph.visualizeSignals();
 
     return 0;
 }

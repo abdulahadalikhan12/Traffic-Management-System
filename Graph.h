@@ -49,7 +49,8 @@ public:
     void setGreenTime(char name, int greenTime);
 
     // visualize the graph (print all intersections and their roads)
-    void visualize();
+    void visualizeNetwork();
+    void visualizeSignals();
 
     void createIntersections(const std::string &fileName);
     void createNetwork(const std::string &fileName);

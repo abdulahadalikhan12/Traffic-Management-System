@@ -173,12 +173,12 @@ void Graph::setGreenTime(char name, int greenTime)
     }
 }
 
-void Graph::visualize()
+void Graph::visualizeNetwork()
 {
     Intersection *current = intersections;
     while (current)
     {
-        std::cout << "Intersection " << current->name << " (Green Time: " << current->greenTime << "s) -> ";
+        std::cout << current->name << " -> ";
         Road *road = current->roads;
         while (road)
         {
@@ -186,6 +186,16 @@ void Graph::visualize()
             road = road->next;
         }
         std::cout << std::endl;
+        current = current->next;
+    }
+}
+
+void Graph::visualizeSignals()
+{
+    Intersection *current = intersections;
+    while (current)
+    {
+        std::cout << "Intersection " << current->name << " Green Time -> " << current->greenTime << "s" << std::endl;
         current = current->next;
     }
 }
