@@ -32,6 +32,3 @@
 *.app
 *.Identifier
 test.cpp
-
-# Data Sets
-*.csv
