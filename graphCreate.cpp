@@ -139,4 +139,56 @@ public:
             current = current->next;
         }
     }
+
+    void createIntersections(const string &fileName)
+    {
+        ifstream file(fileName);
+        if (!file)
+        {
+            cout << "Error opening file!" << endl;
+            return;
+        }
+        // read traffic_signals.csv
+        // Intersection,GreenTime
+        // A,30
+        string line;
+        while (getline(file, line))
+        {
+            char name;
+            int greenTime;
+            if (sscanf(line.c_str(), "%c,%d", &name, &greenTime) == 2)
+            {
+                addIntersection(name, greenTime);
+            }
+        }
+
+        file.close();
+    }
+
+    void createNetwork(const string &fileName)
+    {
+        ifstream file(fileName);
+        if (!file)
+        {
+            cout << "Error opening file!" << endl;
+            return;
+        }
+        // read road_network.csv
+        // Intersection1,Intersection2,TravelTime
+        // A,B,10
+
+        string line;
+        while (getline(file, line))
+        {
+            char from, to;
+            int travelTime;
+            if (sscanf(line.c_str(), "%c,%c,%d", &from, &to, &travelTime) == 3)
+            {
+                addRoad(from, to, travelTime);
+            }
+        }
+
+        file.close();
+    }
+    
 };
