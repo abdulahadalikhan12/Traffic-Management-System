@@ -14,8 +14,10 @@ public:
     char dest;      // destination intersection
     int travelTime; // travel time/congestion level for the road
     Road *next;
+    int status; // 1 = Clear, 2 = Blocked, 3 = Under Repair
 
     Road(char dest, int travelTime);
+    
 };
 
 class Intersection
@@ -45,6 +47,8 @@ public:
     void createIntersections(const std::string &fileName);
     void createNetwork(const std::string &fileName);
     void dijkstra(char start, char end);
+    void simulateRoadClosure(const std::string &fileName);
+    void updateRoadStatus(char start, char end, std::string status);
 };
 
 #endif // GRAPH_H

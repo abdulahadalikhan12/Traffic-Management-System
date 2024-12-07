@@ -3,7 +3,7 @@
 
 
 Road::Road(char dest, int travelTime)
-    : dest(dest), travelTime(travelTime), next(nullptr) {}
+    : dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
 
 Intersection::Intersection(char name, int greenTime)
     : name(name), greenTime(greenTime), roads(nullptr), next(nullptr) {}
@@ -213,3 +213,63 @@ void Graph::dijkstra(char start, char end)
         std::cout << std::endl;
     }
 }
+
+void Graph::simulateRoadClosure(const std::string &fileName)
+{
+    std::ifstream file(fileName);
+    if (!file)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+
+    std::string line;
+    while(getline(file, line))
+    {
+        char start, end;
+        std::string status;
+        if (sscanf(line.c_str(), "%c,%c,%d", &start, &end, &status) == 3)
+        {
+            updateRoadStatus(start, end, status);
+        }
+    }
+    file.close();
+}
+
+void Graph::updateRoadStatus(char start, char end, std::string status)
+{
+    Intersection *startIntersection = findIntersection(start);
+    
+    //If the starting intersection is not found
+    if(startIntersection == NULL)
+        std::cout << "Intersection "<<start<<" not found.\n";
+    
+    else{
+        Road *temp = startIntersection -> roads;
+        
+        //Iterate to end of the list if necessary
+        while(temp != NULL){
+            //if the destination is the same then we assign new status
+            if(temp-> dest == end){
+                
+                if(status == "Clear"){
+                    temp -> status = 1;
+                    std::cout<<"New Status for "<<start<<" -> "<<end<<" = Clear";
+                }
+
+                else if(status == "Blocked"){
+                    temp -> status = 2;
+                    std::cout<<"New Status for "<<start<<" -> "<<end<<" = Blocked";
+                }
+
+                else if(status == "Under Repair"){
+                    temp -> status = 3;
+                    std::cout<<"New Status for "<<start<<" -> "<<end<<" = Under Repair";
+                }
+                return;
+            }
+            temp = temp -> next;
+        }
+    }
+}
+
