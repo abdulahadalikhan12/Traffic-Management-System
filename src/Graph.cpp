@@ -6,7 +6,10 @@
 /* ROAD CLASS */
 
 // constructor
-Road::Road(char src, char dest, int travelTime) : src(src), dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
+Road::Road(char src, char dest, int travelTime) : src(src), dest(dest), travelTime(travelTime), next(nullptr), status(1)
+{
+    // Status defaults to 1 (Clear) when the road is created
+}
 
 // getter and setters for status
 int Road::getStatus() { return status; }
@@ -28,8 +31,12 @@ std::string Road::getStatusString()
 /* INTERSECTION CLASS */
 
 // constructor
-Intersection::Intersection(char name, int greenTime) : name(name), greenTime(greenTime), roads(nullptr), next(nullptr), vehicles(nullptr) {}
-
+Intersection::Intersection(char name, int greenTime)
+    : name(name), greenTime(greenTime), congestionLevel(0), emergencyFlag(false), roads(nullptr), vehicles(nullptr), next(nullptr)
+{
+    // Default values for congestionLevel and emergencyFlag are set here.
+    // roads and vehicles are pointers to linked lists, initialized to nullptr
+}
 // add vehicle to the intersection
 void Intersection::addVehicle(Vehicle *&vehicle)
 {
@@ -77,6 +84,11 @@ void Intersection::printVehicles()
         temp->printVehicle();
         temp = temp->next;
     }
+}
+
+void Intersection::incrementCongestionLevel()
+{
+    congestionLevel++;
 }
 
 /* GRAPH CLASS */
@@ -253,6 +265,7 @@ void Graph::createVehicles(const std::string &fileName)
             {
                 Vehicle *newVehicle = new Vehicle(vehicleName, start, end);
                 startIntersection->addVehicle(newVehicle);
+                startIntersection->incrementCongestionLevel();
             }
             else
             {
@@ -843,5 +856,66 @@ void Graph::findAllRoutes(char start, char end)
             }
             cout << endl;
         }
+    }
+}
+
+void Graph::moveVehicleToNewIntersection(const std::string &vehicleName, char newIntersection)
+{
+    Vehicle *vehicle = nullptr;
+    Intersection *currentIntersection = nullptr;
+
+    // search for the vehicle across all intersections
+    for (int i = 0; i < MAX_INTERSECTIONS; i++)
+    {
+        if (intersections[i])
+        {
+            Vehicle *temp = intersections[i]->vehicles;
+            while (temp)
+            {
+                if (temp->name == vehicleName)
+                {
+                    vehicle = temp;
+                    currentIntersection = intersections[i]; // store the current intersection
+                    break;
+                }
+                temp = temp->next;
+            }
+        }
+        if (vehicle)
+            break; // exit outer loop if vehicle is found
+    }
+
+    // if the vehicle is not found, print an error and exit
+    if (!vehicle)
+    {
+        std::cout << "Vehicle " << vehicleName << " not found." << std::endl;
+        return;
+    }
+
+    // check if there is a direct road from current intersection to the new intersection
+    Road *road = currentIntersection->roads;
+    bool roadFound = false;
+    while (road)
+    {
+        if (road->dest == newIntersection && road->getStatus() == 1)
+        { // check if road is clear
+            roadFound = true;
+            break;
+        }
+        road = road->next;
+    }
+
+    // if a direct road exists, move the vehicle
+    if (roadFound)
+    {
+        vehicle->printCurrent();                         // print current position
+        vehicle->current = newIntersection;              // move vehicle to the new intersection
+        currentIntersection->incrementCongestionLevel(); // increase congestion
+        vehicle->printCurrent();                         // print new position
+        std::cout << "Vehicle " << vehicle->name << " moved to intersection " << vehicle->current << std::endl;
+    }
+    else
+    {
+        std::cout << "No direct road or blocked road found from " << currentIntersection->name << " to " << newIntersection << "." << std::endl;
     }
 }

@@ -43,6 +43,7 @@ public:
     void addVehicle(Vehicle *&vehicle);
     void removeVehicle(const std::string &name);
     void printVehicles();
+    void incrementCongestionLevel();
 };
 
 // Graph class representing the road network
@@ -73,6 +74,7 @@ public:
     void createVehicles(const std::string &fileName);
     void printAllVehicles();
     void moveVehiclesEfficiently(const std::string &vehicleName);
+    void moveVehicleToNewIntersection(const std::string &vehicleName, char newIntersection);
 
     // File-based network creation
     void createIntersections(const std::string &fileName);
@@ -89,6 +91,7 @@ public:
     void printReroutedPath(int parent[], int startIndex, int endIndex);
     void findAllRoutes(char start, char end);
     void dfs(Intersection *current, char end, char currentPath[], int pathIndex, bool visited[], char allPaths[][100], int &pathCount);
+
 };
 
 #endif // GRAPH_H

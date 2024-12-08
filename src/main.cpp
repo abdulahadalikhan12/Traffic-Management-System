@@ -2,9 +2,11 @@
 #include <fstream>
 #include <string>
 #include "../src/Graph.h"
+#include "../src/TrafficMonitor.h"
 using namespace std;
 
 Graph graph;
+TrafficMonitor monitor;
 
 void mainMenu()
 {
@@ -25,12 +27,10 @@ void inputHandlingBlockRoad(char &input1, char &input2)
     while ((input1 < 'A' || input1 > 'Z') || (input2 < 'A' || input2 > 'Z'))
     {
         cout << "Invalid input. Please enter valid road intersections (A-Z): ";
-        cout<<"Enter First Intersection: ";
+        cout << "Enter First Intersection: ";
         cin >> input1;
-
-        cout<<"Enter Second Intersection: ";
-        cin >>input2;
-        
+        cout << "Enter Second Intersection: ";
+        cin >> input2;
     }
 }
 
@@ -38,12 +38,12 @@ void inputHandlingVehicleMovement(string &vehicleName, char &newIntersection)
 {
     cout << "Enter vehicle name (e.g., V1): ";
     cin >> vehicleName;
-    
-    do{
+
+    do
+    {
         cout << "Enter new intersection (A-Z): ";
         cin >> newIntersection;
-    }
-    while(newIntersection < 'A' || newIntersection > 'Z');
+    } while (newIntersection < 'A' || newIntersection > 'Z');
 }
 
 int main()
@@ -56,14 +56,14 @@ int main()
     graph.createVehicles("data/vehicles.csv");
     graph.simulateRoadClosure("data/road_closures.csv");
 
-    //test findAllRoutes
-    //graph.findAllRoutes('A', 'D');
+    // test findAllRoutes
+    // graph.findAllRoutes('A', 'D');
+
 
     string vehicleName;   // Declare the variable here to use across the switch cases
     char newIntersection; // Declare the variable here for vehicle movement
 
     // Start simulation loop
-    
     while (choice != 9)
     {
         mainMenu();
@@ -74,24 +74,28 @@ int main()
         {
         case 1:
             // Display the network
+            cout << "Displaying City Traffic Network...\n";
             graph.visualizeNetwork();
             break;
         case 2:
             // Display traffic signal status
+            cout << "Displaying Traffic Signal Status...\n";
             graph.visualizeSignals();
             break;
         case 3:
             // Display congestion status
-            // graph.displayCongestion();  // Implement if necessary
+            cout << "Displaying Congestion Status...\n";
+            monitor.displayTrafficStatus();
             break;
         case 4:
             // Display blocked roads
+            cout << "Displaying Blocked Roads...\n";
             graph.printBlockedRoads();
             break;
         case 5:
             // Handle emergency vehicle routing
             cout << "Handling emergency vehicle routing...\n";
-            // graph.handleEmergencyVehicle();
+            // graph.handleEmergencyVehicle(); // Uncomment once implemented
             break;
         case 6:
             // Block a road due to an accident
@@ -100,31 +104,35 @@ int main()
             cin >> start >> end;
             inputHandlingBlockRoad(start, end);
 
+            cout << "Blocking road " << start << " -> " << end << endl;
             graph.blockRoad(start, end);         // Block the road
             graph.rerouteForBlocked(start, end); // Reroute vehicles
             break;
         case 7:
             // Simulate vehicle routing
             char starting, ending;
-            cout<<"Enter Starting Intersection: ";
-            cin>>starting;
-            cout<<"Enter Second Intersection: ";
-            cin>>ending;
+            cout << "Enter Starting Intersection (A-Z): ";
+            cin >> starting;
+            cout << "Enter Ending Intersection (A-Z): ";
+            cin >> ending;
             inputHandlingBlockRoad(starting, ending);
-            graph.findAllRoutes(starting, ending);  
+
+            cout << "Simulating route from " << starting << " to " << ending << endl;
+            graph.findAllRoutes(starting, ending);
             break;
         case 8:
-            // Manually move a vehicle
-            inputHandlingVehicleMovement(vehicleName, newIntersection); // Call to get vehicle name and destination
-            // graph.moveVehicleToNewIntersection(vehicleName, newIntersection); // Implement this function
+            // manually move a vehicle
+            inputHandlingVehicleMovement(vehicleName, newIntersection);
+            cout << "Moving vehicle " << vehicleName << " to intersection " << newIntersection << endl;
+            graph.moveVehicleToNewIntersection(vehicleName, newIntersection);
             break;
         case 9:
             cout << "Exiting Simulation\n";
             break;
         default:
-            cout << "Invalid Choice\n";
+            cout << "Invalid Choice. Please select a valid option.\n";
         }
     }
-    
+
     return 0;
 }
