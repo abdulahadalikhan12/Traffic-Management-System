@@ -4,7 +4,6 @@
 #include "../src/Graph.h"
 using namespace std;
 
-// global instance of graph to keep track of all changes
 Graph graph;
 
 void mainMenu()
@@ -17,124 +16,96 @@ void mainMenu()
     cout << "5. Handle Emergency Vehicle Routing\n";
     cout << "6. Block Road Due to Accident\n";
     cout << "7. Simulate Vehicle Routing\n";
-    cout << "8. Exit Simulation\n\n";
+    cout << "8. Manually Move Vehicle\n";
+    cout << "9. Exit Simulation\n\n";
 }
 
-void inputHandlingBlockRoad(char &input1, char &input2){
-    
-    while((input1 < 'A' || input1 > 'Z') || (input2 < 'A' || input2 > 'Z')){
-        cout<<"Either one or both were Ivalid Inputs. Please enter a Capital Letter(A-Z): ";
-        cin>>input1 >> input2;
+void inputHandlingBlockRoad(char &input1, char &input2)
+{
+    while ((input1 < 'A' || input1 > 'Z') || (input2 < 'A' || input2 > 'Z'))
+    {
+        cout << "Invalid input. Please enter valid road intersections (A-Z): ";
+        cin >> input1 >> input2;
     }
-
 }
 
+void inputHandlingVehicleMovement(string &vehicleName, char &newIntersection)
+{
+    cout << "Enter vehicle name (e.g., V1): ";
+    cin >> vehicleName;
+    cout << "Enter new intersection (A-Z): ";
+    cin >> newIntersection;
+}
 
 int main()
 {
     int choice = 0;
 
+    // Load initial data from CSV files
     graph.createIntersections("data/traffic_signals.csv");
     graph.createNetwork("data/road_network.csv");
     graph.createVehicles("data/vehicles.csv");
     graph.simulateRoadClosure("data/road_closures.csv");
-    graph.rerouteNetwork();
 
-    while(choice != 8){
+    string vehicleName;   // Declare the variable here to use across the switch cases
+    char newIntersection; // Declare the variable here for vehicle movement
+
+    // Start simulation loop
+    while (choice != 9)
+    {
         mainMenu();
         cout << "Enter your choice: ";
         cin >> choice;
 
-        switch(choice)
+        switch (choice)
         {
-            case 1:
-                graph.visualizeNetwork();
-                break;
-            case 2:
-                graph.visualizeSignals();
-                break;
-            case 3:
-                //graph.displayCongestion();
-                break;
-            case 4:
-                graph.printBlockedRoads();
-                break;
-            case 5:
-                //graph.handleEmergencyVehicle();
-                break;
-            case 6:
-                cout<<"Enter road to block(start, end): ";
-                char start, end;
-                cin >> start >> end;
+        case 1:
+            // Display the network
+            graph.visualizeNetwork();
+            break;
+        case 2:
+            // Display traffic signal status
+            graph.visualizeSignals();
+            break;
+        case 3:
+            // Display congestion status
+            // graph.displayCongestion();  // Implement if necessary
+            break;
+        case 4:
+            // Display blocked roads
+            graph.printBlockedRoads();
+            break;
+        case 5:
+            // Handle emergency vehicle routing
+            cout << "Handling emergency vehicle routing...\n";
+            // graph.handleEmergencyVehicle();
+            break;
+        case 6:
+            // Block a road due to an accident
+            char start, end;
+            cout << "Enter road to block (start, end): ";
+            cin >> start >> end;
+            inputHandlingBlockRoad(start, end);
 
-                inputHandlingBlockRoad(start, end);
-    
-                graph.blockRoad(start, end);
-                graph.rerouteForBlocked(start, end);
-                break;
-            case 7:
-                //graph.simulateVehicleRouting();
-                break;
-            case 8:
-                cout << "Exiting Simulation\n";
-                break;
-            default:
-                cout << "Invalid Choice\n";
+            graph.blockRoad(start, end);         // Block the road
+            graph.rerouteForBlocked(start, end); // Reroute vehicles
+            break;
+        case 7:
+            // Simulate vehicle routing
+            // graph.simulateVehicleRouting();  // Implement if necessary
+            break;
+        case 8:
+            // Manually move a vehicle
+            inputHandlingVehicleMovement(vehicleName, newIntersection); // Call to get vehicle name and destination
+            // graph.moveVehicleToNewIntersection(vehicleName, newIntersection); // Implement this function
+            break;
+        case 9:
+            cout << "Exiting Simulation\n";
+            break;
+        default:
+            cout << "Invalid Choice\n";
         }
     }
-    // graph.createIntersections("data/traffic_signals.csv");
-    // graph.createNetwork("data/road_network.csv");
-    // graph.createVehicles("data/vehicles.csv");
-    // graph.simulateRoadClosure("data/road_closures.csv");
 
-    // //Updating Status of Roads
-
-    // // test efficient move
-    // graph.visualizeNetwork();
-    // graph.printBlockedRoads();
-    // graph.moveVehiclesEfficiently("V1");
-
-    // cout<<"\nAfter re-routing:\n";
-    // graph.rerouteNetwork();
-    
     return 0;
 }
-
-
-
-/*
-
-        cout << "Enter your choice: ";
-        cin >> choice;
-
-        switch(choice)
-        {
-            case 1:
-                graph.visualizeNetwork();
-                break;
-            case 2:
-                graph.visualizeSignals();
-                break;
-            case 3:
-                //graph.displayCongestion();
-                break;
-            case 4:
-                //graph.displayBlockedRoads();
-                break;
-            case 5:
-                //graph.handleEmergencyVehicle();
-                break;
-            case 6:
-                //graph.blockRoad();
-                break;
-            case 7:
-                //graph.simulateVehicleRouting();
-                break;
-            case 8:
-                cout << "Exiting Simulation\n";
-                break;
-            default:
-                cout << "Invalid Choice\n";
-        }
-
-    }*/
