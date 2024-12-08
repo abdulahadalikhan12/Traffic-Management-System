@@ -579,7 +579,7 @@ void Graph::rerouteForBlocked(char start, char end)
             {
                 if (temp->status == 2 || temp->status == 3)
                 { // checks only for blocked or under repair
-                    // std::cout << "Road blocked " << start << " -> " << end << ". Rerouting...\n";
+                    //std::cout << "Road blocked " << start << " -> " << end << ". Rerouting...\n";
                     BFS(start, end);
                     return;
                 }
@@ -593,7 +593,7 @@ void Graph::rerouteForBlocked(char start, char end)
 // Algorithm used for rerouting
 void Graph::BFS(char start, char end)
 {
-    bool visited[MAX_INTERSECTIONS] = {false}; // visited array
+    bool visited[MAX_INTERSECTIONS] = {false}; 
     int parent[MAX_INTERSECTIONS];             // for path reconstruction
     std::fill(parent, parent + MAX_INTERSECTIONS, -1);
 
@@ -658,7 +658,8 @@ void Graph::rerouteNetwork(){
                           << intersections[i] -> name << " -> " 
                           << road -> dest << "..." << std::endl;
 
-                    //Rerouting Road
+                    //Rerouting Road (Go to BFS function and find printReroutedPath, that's where you'll implement
+                    //your functionality Muneeb g)
                     rerouteForBlocked(intersections[i] -> name, road -> dest);
                 }
                 road = road->next;
@@ -667,6 +668,7 @@ void Graph::rerouteNetwork(){
     }
 }
 
+//After calling blockRoad function also call rerouteNetwork to update the network
 void Graph::blockRoad(char start, char end){
     Intersection *startIntersection = findIntersection(start);
 
