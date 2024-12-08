@@ -2,9 +2,12 @@
 #include "../src/MinHeap.h"
 #include "../src/Vehicle.h"
 
-Road::Road(char src, char dest, int travelTime)
-    : src(src), dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
+/* ROAD CLASS */
 
+// constructor
+Road::Road(char src, char dest, int travelTime): src(src), dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
+
+// getter and setters for status
 int Road::getStatus() { return status; }
 
 void Road::setStatus(int status) { this->status = status; }
@@ -21,10 +24,12 @@ std::string Road::getStatusString()
         return "Unknown";
 }
 
-// Intersection Methods
-Intersection::Intersection(char name, int greenTime)
-    : name(name), greenTime(greenTime), roads(nullptr), next(nullptr), vehicles(nullptr) {}
+/* INTERSECTION CLASS */
 
+// constructor
+Intersection::Intersection(char name, int greenTime): name(name), greenTime(greenTime), roads(nullptr), next(nullptr), vehicles(nullptr) {}
+
+// add vehicle to the intersection
 void Intersection::addVehicle(Vehicle *&vehicle)
 {
     if (vehicles == nullptr)
@@ -42,6 +47,7 @@ void Intersection::addVehicle(Vehicle *&vehicle)
     }
 }
 
+// remove vehicle from the intersection
 void Intersection::removeVehicle(const std::string &name)
 {
     Vehicle *temp = vehicles;
@@ -61,6 +67,7 @@ void Intersection::removeVehicle(const std::string &name)
     }
 }
 
+// print all vehicles at the intersection
 void Intersection::printVehicles()
 {
     Vehicle *temp = vehicles;
@@ -71,6 +78,9 @@ void Intersection::printVehicles()
     }
 }
 
+/* GRAPH CLASS */
+
+// constructor
 Graph::Graph()
 {
     for (int i = 0; i < MAX_INTERSECTIONS; ++i)
@@ -82,7 +92,7 @@ Graph::Graph()
 // add a new intersection
 void Graph::addIntersection(char name, int greenTime)
 {
-    int index = name - 'A'; // Map 'A' to 0, 'B' to 1, ..., 'Z' to 25
+    int index = name - 'A'; // map 'A' to 0, 'B' to 1, ..., 'Z' to 25
     if (index < 0 || index >= MAX_INTERSECTIONS)
     {
         std::cout << "Invalid intersection name!" << std::endl;
@@ -98,7 +108,7 @@ void Graph::addIntersection(char name, int greenTime)
 // find an intersection by its name
 Intersection *Graph::findIntersection(char name)
 {
-    int index = name - 'A'; // Map 'A' to 0, 'B' to 1, ..., 'Z' to 25
+    int index = name - 'A';
     if (index < 0 || index >= MAX_INTERSECTIONS)
     {
         return nullptr;
@@ -112,34 +122,27 @@ void Graph::addRoad(char from, char to, int travelTime)
     Intersection *fromIntersection = findIntersection(from);
     Intersection *toIntersection = findIntersection(to);
 
-    // Check if either intersection is invalid
-    if (!fromIntersection || !toIntersection)
-    {
-        std::cout << "Invalid intersections for road between " << from << " and " << to << "!" << std::endl;
-        return;
-    }
-
-    // If the 'from' intersection doesn't exist, add it
+    // if the 'from' intersection doesn't exist, add it
     if (!fromIntersection)
     {
         addIntersection(from);
         fromIntersection = findIntersection(from);
     }
 
-    // If the 'to' intersection doesn't exist, add it
+    // if the 'to' intersection doesn't exist, add it
     if (!toIntersection)
     {
         addIntersection(to);
         toIntersection = findIntersection(to);
     }
 
-    // Create and add the road to the 'from' intersection's list of roads
+    // create and add the road to the 'from' intersection's list of roads
     Road *newRoad = new Road(from, to, travelTime);
     newRoad->next = fromIntersection->roads;
     fromIntersection->roads = newRoad;
 }
 
-// Visualize the city traffic network (intersection names and their roads)
+// visualize the city traffic network (intersection names and their roads)
 void Graph::visualizeNetwork()
 {
     for (int i = 0; i < MAX_INTERSECTIONS; ++i)
@@ -158,6 +161,7 @@ void Graph::visualizeNetwork()
     }
 }
 
+// visualize the traffic signals (intersection names and their green light times)
 void Graph::visualizeSignals()
 {
     for (int i = 0; i < MAX_INTERSECTIONS; i++)
@@ -169,7 +173,7 @@ void Graph::visualizeSignals()
     }
 }
 
-// Create intersections from a CSV file
+// create intersections from a CSV file
 void Graph::createIntersections(const std::string &fileName)
 {
     std::ifstream file(fileName);
@@ -184,7 +188,7 @@ void Graph::createIntersections(const std::string &fileName)
     {
         char name;
         int greenTime;
-        if (sscanf(line.c_str(), "%c,%d", &name, &greenTime) == 2)
+        if (sscanf(line.c_str(), "%c,%d", &name, &greenTime) == 2) // parsing (char,int)
         {
             addIntersection(name, greenTime);
         }
@@ -193,7 +197,7 @@ void Graph::createIntersections(const std::string &fileName)
     file.close();
 }
 
-// Create roads between intersections from a CSV file
+// create roads between intersections from a CSV file
 void Graph::createNetwork(const std::string &fileName)
 {
     std::ifstream file(fileName);
@@ -208,7 +212,7 @@ void Graph::createNetwork(const std::string &fileName)
     {
         char from, to;
         int travelTime;
-        if (sscanf(line.c_str(), "%c,%c,%d", &from, &to, &travelTime) == 3)
+        if (sscanf(line.c_str(), "%c,%c,%d", &from, &to, &travelTime) == 3) // parsing (char,char,int)
         {
             addRoad(from, to, travelTime);
         }
@@ -217,6 +221,7 @@ void Graph::createNetwork(const std::string &fileName)
     file.close();
 }
 
+// create vehicles from a CSV file
 void Graph::createVehicles(const std::string &fileName)
 {
     std::ifstream file(fileName);
@@ -234,8 +239,7 @@ void Graph::createVehicles(const std::string &fileName)
         char *nameBuffer = new char[10];
         char start, end;
 
-        // Parse the CSV line using sscanf
-        if (sscanf(line.c_str(), "%[^,],%c,%c", nameBuffer, &start, &end) == 3)
+        if (sscanf(line.c_str(), "%[^,],%c,%c", nameBuffer, &start, &end) == 3) // parsing (string,char,char)
         {
             Intersection *startIntersection = findIntersection(start);
             Intersection *endIntersection = findIntersection(end);
@@ -244,14 +248,12 @@ void Graph::createVehicles(const std::string &fileName)
 
             if (startIntersection && endIntersection)
             {
-                // Create a new vehicle and add it to the starting intersection
                 Vehicle *newVehicle = new Vehicle(vehicleName, start, end);
                 startIntersection->addVehicle(newVehicle);
             }
             else
             {
-                std::cerr << "Error: Invalid intersection names for vehicle "
-                          << vehicleName << std::endl;
+                std::cerr << "Error: Invalid intersection names for vehicle " << vehicleName << std::endl;
             }
         }
         else
@@ -263,6 +265,7 @@ void Graph::createVehicles(const std::string &fileName)
     file.close();
 }
 
+// print all vehicles at all intersections
 void Graph::printAllVehicles()
 {
     for (int i = 0; i < MAX_INTERSECTIONS; i++)
@@ -275,12 +278,12 @@ void Graph::printAllVehicles()
     }
 }
 
-// Dijkstra's Algorithm to find shortest path
+// Dijkstra's algorithm to find the shortest path between two intersections
 void Graph::dijkstra(char start, char end)
 {
-    int dist[MAX_INTERSECTIONS];         // Distance array
-    int parent[MAX_INTERSECTIONS];       // Parent array for path reconstruction
-    bool visited[MAX_INTERSECTIONS];     // Visited array
+    int dist[MAX_INTERSECTIONS];         // distance array
+    int parent[MAX_INTERSECTIONS];       // parent array for path reconstruction
+    bool visited[MAX_INTERSECTIONS];     // visited array
     MinHeap<char>::Node node;            // MinHeap Node structure
     MinHeap<char> pq(MAX_INTERSECTIONS); // Min-Heap priority queue
 
@@ -293,17 +296,17 @@ void Graph::dijkstra(char start, char end)
 
     dist[startIndex] = 0;
 
-    // Single-source shortest path
-    pq.insert({0, start}); // Insert the source node into the priority queue
+    // single-source shortest path
+    pq.insert({0, start}); // insert the source node into the priority queue
 
     while (!pq.isEmpty())
     {
         auto current = pq.extractMin();
-        char u = current.data; // Node data (intersection name)
+        char u = current.data; // intersection name
         int uIndex = u - 'A';
 
         if (visited[uIndex])
-            continue; // Skip if already visited
+            continue; // skip if already visited
         visited[uIndex] = true;
 
         Intersection *intersection = findIntersection(u);
@@ -313,9 +316,11 @@ void Graph::dijkstra(char start, char end)
         Road *road = intersection->roads;
         while (road)
         {
+
             char v = road->dest;
             int weight = road->travelTime;
             int vIndex = v - 'A';
+
 
             if (dist[uIndex] != INT_MAX && dist[uIndex] + weight < dist[vIndex])
             {
@@ -327,7 +332,7 @@ void Graph::dijkstra(char start, char end)
         }
     }
 
-    // Output the shortest path and its distance
+    // output the shortest path and its distance
     if (dist[endIndex] == INT_MAX)
     {
         std::cout << "No path found from " << start << " to " << end << "." << std::endl;
@@ -354,34 +359,35 @@ void Graph::dijkstra(char start, char end)
     }
 }
 
-char Graph::dijkstra(char start, char end,unsigned int n)
+// Dijkstra's algorithm to find the next closest intersection
+char Graph::dijkstra(char start, char end, unsigned int n)
 {
-    int dist[MAX_INTERSECTIONS];         // Distance array
-    int parent[MAX_INTERSECTIONS];       // Parent array for path reconstruction
-    bool visited[MAX_INTERSECTIONS];     // Visited array
-    MinHeap<char>::Node node;            // MinHeap Node structure
-    MinHeap<char> pq(MAX_INTERSECTIONS); // Min-Heap priority queue
+    int dist[MAX_INTERSECTIONS];
+    int parent[MAX_INTERSECTIONS];
+    bool visited[MAX_INTERSECTIONS];
+    MinHeap<char>::Node node; 
+    MinHeap<char> pq(MAX_INTERSECTIONS);
 
-    std::fill(dist, dist + MAX_INTERSECTIONS, INT_MAX);     // Initialize distances to infinity
-    std::fill(visited, visited + MAX_INTERSECTIONS, false); // Initialize visited array to false
-    std::fill(parent, parent + MAX_INTERSECTIONS, -1);      // Initialize parent array to -1
+    // initialize arrays
+    std::fill(dist, dist + MAX_INTERSECTIONS, INT_MAX);
+    std::fill(visited, visited + MAX_INTERSECTIONS, false);
+    std::fill(parent, parent + MAX_INTERSECTIONS, -1);
 
     int startIndex = start - 'A';
     int endIndex = end - 'A';
 
     dist[startIndex] = 0;
 
-    // Single-source shortest path
-    pq.insert({0, start}); // Insert the source node into the priority queue
+    pq.insert({0, start}); // insert the source node into the priority queue
 
     while (!pq.isEmpty())
     {
         auto current = pq.extractMin();
-        char u = current.data; // Node data (intersection name)
+        char u = current.data; // intersection name
         int uIndex = u - 'A';
 
         if (visited[uIndex])
-            continue; // Skip if already visited
+            continue; // skip if already visited
         visited[uIndex] = true;
 
         Intersection *intersection = findIntersection(u);
@@ -405,39 +411,39 @@ char Graph::dijkstra(char start, char end,unsigned int n)
         }
     }
 
-    // Output the shortest path and its distance
     if (dist[endIndex] == INT_MAX)
     {
         std::cout << "No path found from " << start << " to " << end << "." << std::endl;
-        return '\0'; // Return null if no path is found
+        return '\0'; // return null if no path is found
     }
     else
     {
         std::cout << "Shortest path from " << start << " to " << end << " is " << dist[endIndex] << "s." << std::endl;
 
-        // Reconstruct the path from end to start using the parent array
+        // reconstruct the path from end to start using the parent array
         char path[MAX_INTERSECTIONS];
         int pathLength = 0;
         int current = endIndex;
 
-        // Traverse the parent array to reconstruct the path
+        // traverse the parent array to reconstruct the path
         while (current != -1)
         {
             path[pathLength++] = 'A' + current;
             current = parent[current];
         }
 
-        // Ensure there is a valid path starting from 'start'
+        // ensure there is a valid path starting from 'start'
         if (pathLength < 2)
         {
-            return '\0'; // Return '\0' if the path doesn't have a next node
+            return '\0'; // return '\0' if the path doesn't have a next node
         }
 
-        // The immediate next node is the second node in the reconstructed path
+        // the immediate next node is the second node in the reconstructed path
         return path[pathLength - 2]; // Return the node immediately after the 'start'
     }
 }
 
+// simulate road closures from a CSV file
 void Graph::simulateRoadClosure(const std::string &fileName)
 {
     std::ifstream file(fileName);
@@ -463,11 +469,12 @@ void Graph::simulateRoadClosure(const std::string &fileName)
     file.close();
 }
 
+// update the status of a road between two intersections
 void Graph::updateRoadStatus(char start, char end, std::string status)
 {
     Intersection *startIntersection = findIntersection(start);
 
-    // If the starting intersection is not found
+    // if the starting intersection is not found
     if (startIntersection == NULL)
         std::cout << "Intersection " << start << " not found.\n";
 
@@ -475,7 +482,7 @@ void Graph::updateRoadStatus(char start, char end, std::string status)
     {
         Road *temp = startIntersection->roads;
 
-        // Iterate to end of the list if necessary
+        // iterate to end of the list if necessary
         while (temp != NULL)
         {
             // if the destination is the same then we assign new status
@@ -535,7 +542,7 @@ void Graph::moveVehiclesEfficiently(const std::string &vehicleName)
 
     char nextIntersection = dijkstra(vehicle->current, vehicle->end, 1);
 
-    // If dijkstra returns an invalid intersection, handle it
+    // if dijkstra returns an invalid intersection, handle it
     if (nextIntersection == '\0')
     {
         std::cout << "Error: Invalid intersection returned by Dijkstra's algorithm." << std::endl;
