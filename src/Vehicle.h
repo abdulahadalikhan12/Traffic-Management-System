@@ -26,7 +26,12 @@ public:
 
     int priority;
 
-    EmergencyVehicle(string name, char start, char end, int priority);
+    EmergencyVehicle(string name, char start, char end, int priority = 0);
+    EmergencyVehicle(Vehicle *vehicle, int priority = 0);
+
+    void setPriority(int priority);
+    int getPriority();
+
     void printEmergencyDetails();
 };
 

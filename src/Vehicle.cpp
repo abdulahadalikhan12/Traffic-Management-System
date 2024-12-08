@@ -19,6 +19,20 @@ void Vehicle::printVehicle()
 // constructor for EmergencyVehicle
 EmergencyVehicle::EmergencyVehicle(string name, char start, char end, int priority) : Vehicle(name, start, end), priority(priority) {}
 
+EmergencyVehicle::EmergencyVehicle(Vehicle *vehicle, int priority) : Vehicle(vehicle->name, vehicle->start, vehicle->end), priority(priority) {}
+
+// set the priority of the emergency vehicle
+void EmergencyVehicle::setPriority(int priority)
+{
+    this->priority = priority;
+}
+
+// get the priority of the emergency vehicle
+int EmergencyVehicle::getPriority()
+{
+    return priority;
+}
+
 // print details of the emergency vehicle
 void EmergencyVehicle::printEmergencyDetails()
 {
