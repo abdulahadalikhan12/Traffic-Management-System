@@ -61,9 +61,10 @@ public:
     void createVehicles(const std::string &fileName);
     void printAllVehicles();
     void dijkstra(char start, char end);
+    char dijkstra(char start, char end, unsigned int n);
     void simulateRoadClosure(const std::string &fileName);
     void updateRoadStatus(char start, char end, std::string status);
-    void moveVehiclesEfficiently(int n);
+    void moveVehiclesEfficiently();
 };
 
 #endif // GRAPH_H
