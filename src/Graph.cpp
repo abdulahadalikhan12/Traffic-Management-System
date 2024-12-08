@@ -21,6 +21,7 @@ std::string Road::getStatusString()
         return "Unknown";
 }
 
+
 // Intersection Methods
 Intersection::Intersection(char name, int greenTime)
     : name(name), greenTime(greenTime), roads(nullptr), next(nullptr), vehicles(nullptr) {}
@@ -55,7 +56,7 @@ void Intersection::removeVehicle(const std::string &name)
                 prev->next = temp->next;
             else
                 vehicles = temp->next;
-            return;
+
         }
         prev = temp;
         temp = temp->next;
@@ -79,6 +80,7 @@ Graph::Graph()
         intersections[i] = nullptr;
     }
 }
+
 
 // add a new intersection
 void Graph::addIntersection(char name, int greenTime)
@@ -111,12 +113,30 @@ Intersection *Graph::findIntersection(char name)
 void Graph::addRoad(char from, char to, int travelTime)
 {
     Intersection *fromIntersection = findIntersection(from);
+    Intersection *toIntersection = findIntersection(to);
+
+    // Check if either intersection is invalid
+    if (!fromIntersection || !toIntersection)
+    {
+        std::cout << "Invalid intersections for road between " << from << " and " << to << "!" << std::endl;
+        return;
+    }
+
+    // If the 'from' intersection doesn't exist, add it
     if (!fromIntersection)
     {
         addIntersection(from);
         fromIntersection = findIntersection(from);
     }
 
+    // If the 'to' intersection doesn't exist, add it
+    if (!toIntersection)
+    {
+        addIntersection(to);
+        toIntersection = findIntersection(to);
+    }
+
+    // Create and add the road to the 'from' intersection's list of roads
     Road *newRoad = new Road(from, to, travelTime);
     newRoad->next = fromIntersection->roads;
     fromIntersection->roads = newRoad;
@@ -223,6 +243,7 @@ void Graph::createVehicles(const std::string &fileName)
             Intersection *startIntersection = findIntersection(start);
             Intersection *endIntersection = findIntersection(end);
             std::string vehicleName(nameBuffer);
+            delete[] nameBuffer;
 
             if (startIntersection && endIntersection)
             {
@@ -387,7 +408,7 @@ char Graph::dijkstra(char start, char end, unsigned int n)
             road = road->next;
         }
     }
-    char temp;
+    char temp = '0';
     // Output the shortest path and its distance
     if (dist[endIndex] == INT_MAX)
     {
@@ -409,14 +430,9 @@ char Graph::dijkstra(char start, char end, unsigned int n)
 
         if (n > pathLength || n <= 0)
         {
-            std::cout << "Path not found" << std::endl;
-            return '0';
+            return '0'; // Return '0' if the path doesn't have n elements or n is invalid
         }
-        {
-            std::cout << "Path not found" << std::endl;
-            return '0';
-        }
-        temp = path[n];
+        return path[n];
     }
     return temp;
 }
@@ -493,4 +509,25 @@ void Graph::updateRoadStatus(char start, char end, std::string status)
 /*Example: V1 is moving from A to E and next closest intersection is B, move to B*/
 void Graph::moveVehiclesEfficiently()
 {
+    for (int i = 0; i < MAX_INTERSECTIONS; i++)
+    {
+        if (intersections[i])
+        {
+            Vehicle *temp = intersections[i]->vehicles;
+            while (temp)
+            {
+                char nextIntersection = dijkstra(temp->current, temp->end, 1);
+                if (nextIntersection != '0')
+                {
+                    Intersection *next = findIntersection(nextIntersection);
+                    if (next)
+                    {
+                        next->addVehicle(temp);
+                        intersections[i]->removeVehicle(temp->name);
+                    }
+                }
+                temp = temp->next;
+            }
+        }
+    }
 }
