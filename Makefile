@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall
 
-SRC = src/main.cpp src/Graph.cpp src/Queue.cpp src/Vehicle.cpp src/TrafficMonitor.cpp
+SRC = src/main.cpp src/Graph.cpp src/Queue.cpp src/Vehicle.cpp src/TrafficMonitor.cpp src/Utility.cpp
 OBJ = $(SRC:.cpp=.o)
 EXEC = traffic_simulator
 
