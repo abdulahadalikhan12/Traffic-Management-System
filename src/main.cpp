@@ -22,17 +22,21 @@ int main()
     return 0;
 }
 
-/*while(choice != 8)
-    {
-        cout<< "------ Allah MashAllah Traffic Simulator ------\n";
-        cout << "1. Display City Traffic Network\n";
-        cout << "2. Display Traffic Signal Status\n";
-        cout << "3. Display Congestion Status\n";
-        cout << "4. Display Blocked Roads\n";
-        cout << "5. Handle Emergency Vehicle Routing\n";
-        cout << "6. Block Road Due to Accident\n";
-        cout << "7. Simulate Vehicle Routing\n";
-        cout << "8. Exit Simulation\n";
+void mainMenu()
+{
+    cout << "------ Welcome To Allah MashAllah Traffic Simulator ------\n";
+    cout << "1. Display City Traffic Network\n";
+    cout << "2. Display Traffic Signal Status\n";
+    cout << "3. Display Congestion Status\n";
+    cout << "4. Display Blocked Roads\n";
+    cout << "5. Handle Emergency Vehicle Routing\n";
+    cout << "6. Block Road Due to Accident\n";
+    cout << "7. Simulate Vehicle Routing\n";
+    cout << "8. Exit Simulation\n";
+}
+
+
+/*
 
         cout << "Enter your choice: ";
         cin >> choice;
