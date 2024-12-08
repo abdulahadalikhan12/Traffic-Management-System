@@ -48,7 +48,11 @@ int main()
     graph.simulateRoadClosure("data/road_closures.csv");
 
     //test findAllRoutes
-    graph.findAllRoutes('A', 'D');
+    graph.findAllRoutes('W', 'Z');
+
+    //test dijkstra's
+    cout<< graph.dijkstra('W', 'Z',0)<<endl;
+    cout<< graph.dijkstra('W', 'Z', 1)<<endl;
 
     //string vehicleName;   // Declare the variable here to use across the switch cases
     //char newIntersection; // Declare the variable here for vehicle movement
