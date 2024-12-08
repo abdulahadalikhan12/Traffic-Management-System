@@ -200,6 +200,60 @@ void Graph::createNetwork(const std::string &fileName)
     file.close();
 }
 
+void Graph::createVehicles(const std::string &fileName)
+{
+    std::ifstream file(fileName);
+    if (!file)
+    {
+        std::cout << "Error opening file!" << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (getline(file, line))
+    {
+        char *nameBuffer = new char[10];
+        char start, end;
+
+        // Parse the CSV line using sscanf
+        if (sscanf(line.c_str(), "%[^,],%c,%c", nameBuffer, &start, &end) == 3)
+        {
+            Intersection *startIntersection = findIntersection(start);
+            Intersection *endIntersection = findIntersection(end);
+            std::string vehicleName(nameBuffer);
+
+            if (startIntersection && endIntersection)
+            {
+                // Create a new vehicle and add it to the starting intersection
+                Vehicle *newVehicle = new Vehicle(vehicleName, start, end);
+                startIntersection->addVehicle(newVehicle);
+            }
+            else
+            {
+                std::cerr << "Error: Invalid intersection names for vehicle "
+                          << vehicleName << std::endl;
+            }
+        }
+        else
+        {
+            std::cerr << "Error: Invalid format in file at line: " << line << std::endl;
+        }
+    }
+
+    file.close();
+}
+
+void Graph::printAllVehicles()
+{
+    for (int i = 0; i < MAX_INTERSECTIONS; i++)
+    {
+        if (intersections[i])
+        {
+            std::cout << "Intersection " << intersections[i]->name << std::endl;
+            intersections[i]->printVehicles();
+        }
+    }
+}
 
 // Dijkstra's Algorithm to find shortest path
 void Graph::dijkstra(char start, char end)
