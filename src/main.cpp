@@ -15,10 +15,16 @@ int main()
     graph.createVehicles("data/vehicles.csv");
     graph.simulateRoadClosure("data/road_closures.csv");
 
+    //Updating Status of Roads
+
     // test efficient move
     graph.visualizeNetwork();
+    graph.printBlockedRoads();
     graph.moveVehiclesEfficiently("V1");
 
+    cout<<"\nAfter re-routing:\n";
+    graph.rerouteNetwork();
+    
     return 0;
 }
 

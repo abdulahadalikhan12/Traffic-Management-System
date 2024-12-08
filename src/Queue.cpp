@@ -48,3 +48,16 @@ Intersection *Queue::dequeue()
         return temp1;
     }
 }
+
+queueNode *Queue::getPointers(int indicator)
+    { // 1 = front ,  2 = rear
+        if (indicator == 1)
+            return front;
+        else if (indicator == 2)
+            return rear;
+        else
+        {
+            std::cout << "Incorrect input.\n";
+            return nullptr;
+        }
+    }

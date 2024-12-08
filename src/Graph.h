@@ -7,6 +7,7 @@
 #include <string>
 #include "Vehicle.h"
 
+
 #define MAX_INTERSECTIONS 26 // maximum number of intersections (A-Z)
 
 class Road
@@ -67,7 +68,9 @@ public:
     void moveVehiclesEfficiently(const std::string &vehicleName);
     void rerouteForBlocked(char start, char end);
     void BFS(char start, char end);
+    void rerouteNetwork();
     void printReroutedPath(int parent[], int startIndex, int endIndex);
+    void printBlockedRoads();
 };
 
 #endif // GRAPH_H

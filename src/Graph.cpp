@@ -160,6 +160,7 @@ void Graph::visualizeNetwork()
             std::cout << std::endl;
         }
     }
+    std::cout<<std::endl;
 }
 
 // visualize the traffic signals (intersection names and their green light times)
@@ -172,6 +173,7 @@ void Graph::visualizeSignals()
             std::cout << intersections[i]->name << " -> " << intersections[i]->greenTime << "s" << std::endl;
         }
     }
+    std::cout<<std::endl;
 }
 
 // create intersections from a CSV file
@@ -277,6 +279,7 @@ void Graph::printAllVehicles()
             intersections[i]->printVehicles();
         }
     }
+    std::cout<<std::endl;
 }
 
 // Dijkstra's algorithm to find the shortest path between two intersections
@@ -492,19 +495,19 @@ void Graph::updateRoadStatus(char start, char end, std::string status)
                 if (status == "Clear")
                 {
                     temp->status = 1;
-                    std::cout << "New Status for " << start << " -> " << end << " = Clear\n";
+                    //std::cout << "Status for " << start << " -> " << end << " = Clear\n";
                 }
 
                 else if (status == "Blocked")
                 {
                     temp->status = 2;
-                    std::cout << "New Status for " << start << " -> " << end << " = Blocked\n";
+                    //std::cout << "Status for " << start << " -> " << end << " = Blocked\n";
                 }
 
                 else if (status == "Under")
                 {
                     temp->status = 3;
-                    std::cout << "New Status for " << start << " -> " << end << " = Under Repair\n";
+                    //std::cout << "Status for " << start << " -> " << end << " = Under Repair\n";
                 }
                 return;
             }
@@ -571,17 +574,18 @@ void Graph::rerouteForBlocked(char start, char end)
         Road *temp = startIntersection->roads;
         while (temp != NULL)
         {
+            //std::cout<<"\nERROR FOUND.\n";
             if (temp->dest == end)
             {
                 if (temp->status == 2 || temp->status == 3)
                 { // checks only for blocked or under repair
-                    std::cout << "Road blocked " << start << " -> " << end << ". Rerouting...\n";
+                    // std::cout << "Road blocked " << start << " -> " << end << ". Rerouting...\n";
                     BFS(start, end);
                     return;
                 }
             }
-        }
         temp = temp->next;
+        }
     }
     std::cout << "Road Clear for " << start << " -> " << end << std::endl;
 }
@@ -617,6 +621,7 @@ void Graph::BFS(char start, char end)
         {
             std::cout << "Alternate route found: ";
             printReroutedPath(parent, start - 'A', end - 'A');
+            std::cout<<"\n\n";
             return;
         }
 
@@ -636,7 +641,30 @@ void Graph::BFS(char start, char end)
         }
     }
 
-    std::cout << "No alternate route found from " << start << " to " << end << "." << std::endl;
+    std::cout << "No alternate route found from " << start << " to " << end << "." << std::endl<<std::endl;
+}
+
+//Checking the whole traffic network for blocked/repairing roads and rerouting
+void Graph::rerouteNetwork(){
+    for (int i = 0; i < MAX_INTERSECTIONS; ++i)
+    {
+        if (intersections[i])
+        {
+            Road *road = intersections[i]->roads;
+            while (road)
+            {
+                if(road -> status == 2 || road -> status == 3){
+                    std::cout << "Rerouting required for road " 
+                          << intersections[i] -> name << " -> " 
+                          << road -> dest << "..." << std::endl;
+
+                    //Rerouting Road
+                    rerouteForBlocked(intersections[i] -> name, road -> dest);
+                }
+                road = road->next;
+            }
+        }
+    }
 }
 
 // Print the rerouted path
@@ -650,4 +678,29 @@ void Graph::printReroutedPath(int parent[], int startIndex, int endIndex)
 
     printReroutedPath(parent, startIndex, parent[endIndex]);
     std::cout << char('A' + endIndex) << " ";
+}
+
+//Print all Blocked roads
+void Graph::printBlockedRoads(){
+    bool flag = false;
+    for (int i = 0; i < MAX_INTERSECTIONS; ++i)
+    {
+        if (intersections[i])
+        {
+            Road *road = intersections[i]->roads;
+            while (road)
+            {
+                if(road -> status == 2 || road -> status == 3){
+                    std::cout <<intersections[i] -> name << " to "<< road -> dest<<
+                                " is blocked.\n";
+                    flag = true;
+                }
+                road = road->next;
+            }
+        }
+    }
+    if(!flag){
+        std::cout<<"No blocked roads found.\n";
+    }
+    std::cout<<std::endl;
 }
