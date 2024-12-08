@@ -187,9 +187,3 @@ This screenshot shows the main menu of the traffic simulation system.
 *Description*: The main menu provides options for managing intersections, roads, vehicles, and running simulations.
 ---
 
-### How to Add Your Own Screenshots:
-1. Take a screenshot of the relevant part of the traffic simulation system (e.g., the terminal output, visualizations).
-2. Save the image in the `assets/` folder or a similar folder within your project.
-3. Add the image path to the `![Description](path/to/your/image.png)` tag in the appropriate screenshot section above.
-
----
