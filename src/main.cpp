@@ -25,7 +25,12 @@ void inputHandlingBlockRoad(char &input1, char &input2)
     while ((input1 < 'A' || input1 > 'Z') || (input2 < 'A' || input2 > 'Z'))
     {
         cout << "Invalid input. Please enter valid road intersections (A-Z): ";
-        cin >> input1 >> input2;
+        cout<<"Enter First Intersection: ";
+        cin >> input1;
+
+        cout<<"Enter Second Intersection: ";
+        cin >>input2;
+        
     }
 }
 
@@ -33,8 +38,12 @@ void inputHandlingVehicleMovement(string &vehicleName, char &newIntersection)
 {
     cout << "Enter vehicle name (e.g., V1): ";
     cin >> vehicleName;
-    cout << "Enter new intersection (A-Z): ";
-    cin >> newIntersection;
+    
+    do{
+        cout << "Enter new intersection (A-Z): ";
+        cin >> newIntersection;
+    }
+    while(newIntersection < 'A' || newIntersection > 'Z');
 }
 
 int main()
@@ -48,13 +57,13 @@ int main()
     graph.simulateRoadClosure("data/road_closures.csv");
 
     //test findAllRoutes
-    graph.findAllRoutes('A', 'D');
+    //graph.findAllRoutes('A', 'D');
 
-    //string vehicleName;   // Declare the variable here to use across the switch cases
-    //char newIntersection; // Declare the variable here for vehicle movement
+    string vehicleName;   // Declare the variable here to use across the switch cases
+    char newIntersection; // Declare the variable here for vehicle movement
 
     // Start simulation loop
-    /*
+    
     while (choice != 9)
     {
         mainMenu();
@@ -96,7 +105,13 @@ int main()
             break;
         case 7:
             // Simulate vehicle routing
-            // graph.simulateVehicleRouting();  // Implement if necessary
+            char starting, ending;
+            cout<<"Enter Starting Intersection: ";
+            cin>>starting;
+            cout<<"Enter Second Intersection: ";
+            cin>>ending;
+            inputHandlingBlockRoad(starting, ending);
+            graph.findAllRoutes(starting, ending);  
             break;
         case 8:
             // Manually move a vehicle
@@ -110,6 +125,6 @@ int main()
             cout << "Invalid Choice\n";
         }
     }
-    */
+    
     return 0;
 }
