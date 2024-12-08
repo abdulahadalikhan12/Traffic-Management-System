@@ -19,6 +19,7 @@ public:
     void enqueue(Intersection *temp);
     Intersection *dequeue();
     queueNode *getPointers(int indicator);
+    bool isEmpty();
 };
 
 #endif
