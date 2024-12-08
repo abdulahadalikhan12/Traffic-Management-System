@@ -1,19 +1,14 @@
 #include "../src/Graph.h"
 #include "../src/MinHeap.h"
+#include "../src/Vehicle.h"
 
 Road::Road(char src, char dest, int travelTime)
     : src(src), dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
 
-void Road::setEmergencyFlag(bool flag) { emergencyFlag = flag; }
-bool Road::getEmergencyFlag() { return emergencyFlag; }
-
-void Road::setVehicleCount(int count) { vehicleCount = count; }
-int Road::getVehicleCount() { return vehicleCount; }
-
-void Road::incrementVehicleCount() { vehicleCount++; }
-void Road::decrementVehicleCount() { vehicleCount--; }
-
 int Road::getStatus() { return status; }
+
+void Road::setStatus(int status) { this->status = status; }
+
 std::string Road::getStatusString()
 {
     if (status == 1)
@@ -26,10 +21,56 @@ std::string Road::getStatusString()
         return "Unknown";
 }
 
-void Road::setStatus(int status) { this->status = status; }
-
+// Intersection Methods
 Intersection::Intersection(char name, int greenTime)
-    : name(name), greenTime(greenTime), roads(nullptr), next(nullptr) {}
+    : name(name), greenTime(greenTime), roads(nullptr), next(nullptr), vehicles(nullptr) {}
+
+void Intersection::addVehicle(Vehicle *vehicle)
+{
+    if (vehicles == nullptr)
+    {
+        vehicles = vehicle;
+    }
+    else
+    {
+        Vehicle *temp = vehicles;
+        while (temp->next)
+        {
+            temp = temp->next;
+        }
+        temp->next = vehicle;
+    }
+}
+
+void Intersection::removeVehicle(const std::string &name)
+{
+    Vehicle *temp = vehicles;
+    Vehicle *prev = nullptr;
+
+    while (temp)
+    {
+        if (temp->name == name)
+        {
+            if (prev)
+                prev->next = temp->next;
+            else
+                vehicles = temp->next;
+            return;
+        }
+        prev = temp;
+        temp = temp->next;
+    }
+}
+
+void Intersection::printVehicles()
+{
+    Vehicle *temp = vehicles;
+    while (temp)
+    {
+        temp->printVehicle();
+        temp = temp->next;
+    }
+}
 
 Graph::Graph()
 {
@@ -158,6 +199,7 @@ void Graph::createNetwork(const std::string &fileName)
 
     file.close();
 }
+
 
 // Dijkstra's Algorithm to find shortest path
 void Graph::dijkstra(char start, char end)
