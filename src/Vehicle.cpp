@@ -1,5 +1,6 @@
 #include "Vehicle.h"
 
+// constructor for Vehicle
 Vehicle::Vehicle(string name, char start, char end)
 {
     this->name = name;
@@ -17,6 +18,7 @@ void Vehicle::printVehicle()
     cout << "End: " << end << endl;
 }
 
+// print the current location of the vehicle
 void Vehicle::printCurrent()
 {
     cout << "Current: " << current << endl;
@@ -25,6 +27,7 @@ void Vehicle::printCurrent()
 // constructor for EmergencyVehicle
 EmergencyVehicle::EmergencyVehicle(string name, char start, char end, int priority) : Vehicle(name, start, end), priority(priority) {}
 
+// constructor for EmergencyVehicle
 EmergencyVehicle::EmergencyVehicle(Vehicle *vehicle, int priority) : Vehicle(vehicle->name, vehicle->start, vehicle->end), priority(priority) {}
 
 // set the priority of the emergency vehicle
