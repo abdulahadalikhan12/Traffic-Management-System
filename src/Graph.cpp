@@ -194,13 +194,13 @@ void Graph::visualizeSignals()
 }
 
 // create intersections from a CSV file
-void Graph::createIntersections(const std::string &fileName)
+bool Graph::createIntersections(const std::string &fileName)
 {
     std::ifstream file(fileName);
     if (!file)
     {
         std::cout << "Error opening file!" << std::endl;
-        return;
+        return false;
     }
 
     std::string line;
@@ -215,16 +215,17 @@ void Graph::createIntersections(const std::string &fileName)
     }
 
     file.close();
+    return true;
 }
 
 // create roads between intersections from a CSV file
-void Graph::createNetwork(const std::string &fileName)
+bool Graph::createNetwork(const std::string &fileName)
 {
     std::ifstream file(fileName);
     if (!file)
     {
         std::cout << "Error opening file!" << std::endl;
-        return;
+        return false;
     }
 
     std::string line;
@@ -239,16 +240,17 @@ void Graph::createNetwork(const std::string &fileName)
     }
 
     file.close();
+    return true;
 }
 
 // create vehicles from a CSV file
-void Graph::createVehicles(const std::string &fileName)
+bool Graph::createVehicles(const std::string &fileName)
 {
     std::ifstream file(fileName);
     if (!file)
     {
         std::cout << "Error opening file!" << std::endl;
-        return;
+        return false;
     }
 
     std::string line;
@@ -284,6 +286,7 @@ void Graph::createVehicles(const std::string &fileName)
     }
 
     file.close();
+    return true;
 }
 
 // print all vehicles at all intersections
@@ -479,13 +482,13 @@ char Graph::dijkstra(char start, char end, unsigned int n)
 }
 
 // simulate road closures from a CSV file
-void Graph::simulateRoadClosure(const std::string &fileName)
+bool Graph::simulateRoadClosure(const std::string &fileName)
 {
     std::ifstream file(fileName);
     if (!file)
     {
         std::cout << "Error opening file!" << std::endl;
-        return;
+        return false;
     }
 
     std::string line;
@@ -502,6 +505,7 @@ void Graph::simulateRoadClosure(const std::string &fileName)
         }
     }
     file.close();
+    return true;
 }
 
 // update the status of a road between two intersections

@@ -64,7 +64,7 @@ public:
     void addRoad(char from, char to, int travelTime);
     void updateRoadStatus(char start, char end, std::string status);
     void blockRoad(char start, char end);
-    void simulateRoadClosure(const std::string &fileName);
+    bool simulateRoadClosure(const std::string &fileName);
     void printBlockedRoads();
 
     // Visualization
@@ -72,14 +72,14 @@ public:
     void visualizeSignals();
 
     // Vehicle management
-    void createVehicles(const std::string &fileName);
+    bool createVehicles(const std::string &fileName);
     void printAllVehicles();
     void moveVehiclesEfficiently(const std::string &vehicleName);
     void moveVehicleToNewIntersection(const std::string &vehicleName, char newIntersection);
 
     // File-based network creation
-    void createIntersections(const std::string &fileName);
-    void createNetwork(const std::string &fileName);
+    bool createIntersections(const std::string &fileName);
+    bool createNetwork(const std::string &fileName);
 
     // Routing algorithms
     void dijkstra(char start, char end);
