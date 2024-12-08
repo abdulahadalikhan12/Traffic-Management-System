@@ -71,6 +71,7 @@ public:
     void rerouteNetwork();
     void printReroutedPath(int parent[], int startIndex, int endIndex);
     void printBlockedRoads();
+    void blockRoad(char start, char end);
 };
 
 #endif // GRAPH_H

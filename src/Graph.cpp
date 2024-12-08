@@ -667,6 +667,32 @@ void Graph::rerouteNetwork(){
     }
 }
 
+void Graph::blockRoad(char start, char end){
+    Intersection *startIntersection = findIntersection(start);
+
+    // if the starting intersection is not found
+    if (startIntersection == NULL)
+        std::cout << "Intersection " << start << " not found.\n";
+
+    else
+    {
+        Road *temp = startIntersection->roads;
+
+        // iterate to end of the list if necessary
+        while (temp != NULL)
+        {
+            // if the destination is the same then we assign new status
+            if (temp->dest == end)
+            {
+                temp -> status = 2;
+                return;
+            }
+            temp = temp->next;
+        }
+    }
+    std::cout<<"No direct Road found between "<<start<<" -> "<<end<<".\n\n";
+}
+
 // Print the rerouted path
 void Graph::printReroutedPath(int parent[], int startIndex, int endIndex)
 {
