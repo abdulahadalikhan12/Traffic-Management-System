@@ -1,8 +1,32 @@
 #include "../src/Graph.h"
 #include "../src/MinHeap.h"
 
-Road::Road(char dest, int travelTime)
-    : dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
+Road::Road(char src, char dest, int travelTime)
+    : src(src), dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
+
+void Road::setEmergencyFlag(bool flag) { emergencyFlag = flag; }
+bool Road::getEmergencyFlag() { return emergencyFlag; }
+
+void Road::setVehicleCount(int count) { vehicleCount = count; }
+int Road::getVehicleCount() { return vehicleCount; }
+
+void Road::incrementVehicleCount() { vehicleCount++; }
+void Road::decrementVehicleCount() { vehicleCount--; }
+
+int Road::getStatus() { return status; }
+std::string Road::getStatusString()
+{
+    if (status == 1)
+        return "Clear";
+    else if (status == 2)
+        return "Blocked";
+    else if (status == 3)
+        return "Under Repair";
+    else
+        return "Unknown";
+}
+
+void Road::setStatus(int status) { this->status = status; }
 
 Intersection::Intersection(char name, int greenTime)
     : name(name), greenTime(greenTime), roads(nullptr), next(nullptr) {}
@@ -52,7 +76,7 @@ void Graph::addRoad(char from, char to, int travelTime)
         fromIntersection = findIntersection(from);
     }
 
-    Road *newRoad = new Road(to, travelTime);
+    Road *newRoad = new Road(from, to, travelTime);
     newRoad->next = fromIntersection->roads;
     fromIntersection->roads = newRoad;
 }
@@ -138,31 +162,32 @@ void Graph::createNetwork(const std::string &fileName)
 // Dijkstra's Algorithm to find shortest path
 void Graph::dijkstra(char start, char end)
 {
-    int dist[MAX_INTERSECTIONS];     // distance array
-    int parent[MAX_INTERSECTIONS];   // parent array for path reconstruction
-    bool visited[MAX_INTERSECTIONS]; // visited array
-    MinHeap pq(MAX_INTERSECTIONS);   // min-heap priority queue
+    int dist[MAX_INTERSECTIONS];         // Distance array
+    int parent[MAX_INTERSECTIONS];       // Parent array for path reconstruction
+    bool visited[MAX_INTERSECTIONS];     // Visited array
+    MinHeap<char>::Node node;            // MinHeap Node structure
+    MinHeap<char> pq(MAX_INTERSECTIONS); // Min-Heap priority queue
 
-    std::fill(dist, dist + MAX_INTERSECTIONS, INT_MAX);     // init distances to infinity
-    std::fill(visited, visited + MAX_INTERSECTIONS, false); // init visited array to false
-    std::fill(parent, parent + MAX_INTERSECTIONS, -1);      // init parent array to -1
+    std::fill(dist, dist + MAX_INTERSECTIONS, INT_MAX);     // Initialize distances to infinity
+    std::fill(visited, visited + MAX_INTERSECTIONS, false); // Initialize visited array to false
+    std::fill(parent, parent + MAX_INTERSECTIONS, -1);      // Initialize parent array to -1
 
     int startIndex = start - 'A';
     int endIndex = end - 'A';
 
     dist[startIndex] = 0;
 
-    // single source shortest path
-    pq.insert({0, start}); // insert the source node into the priority queue
+    // Single-source shortest path
+    pq.insert({0, start}); // Insert the source node into the priority queue
 
     while (!pq.isEmpty())
     {
-        MinHeap::Node current = pq.extractMin();
-        char u = current.node;
+        auto current = pq.extractMin();
+        char u = current.data; // Node data (intersection name)
         int uIndex = u - 'A';
 
         if (visited[uIndex])
-            continue; // skip if already visited
+            continue; // Skip if already visited
         visited[uIndex] = true;
 
         Intersection *intersection = findIntersection(u);
@@ -186,7 +211,7 @@ void Graph::dijkstra(char start, char end)
         }
     }
 
-    // output the shortest path and its distance
+    // Output the shortest path and its distance
     if (dist[endIndex] == INT_MAX)
     {
         std::cout << "No path found from " << start << " to " << end << "." << std::endl;

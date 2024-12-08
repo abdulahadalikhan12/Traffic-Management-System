@@ -11,13 +11,30 @@
 class Road
 {
 public:
-    char dest;      // destination intersection
     int travelTime; // travel time/congestion level for the road
-    Road *next;
     int status; // 1 = Clear, 2 = Blocked, 3 = Under Repair
+    int vehicleCount;
+    char src;       // source intersection
+    char dest;      // destination intersection
+    bool emergencyFlag; //flag to check if energency is triggered
+    Road *next;
+    //Vehicle *vehicles;
 
-    Road(char dest, int travelTime);
+    Road(char src,char dest, int travelTime);
     
+    void setEmergencyFlag(bool flag);
+    bool getEmergencyFlag();
+
+    void setVehicleCount(int count);
+    int getVehicleCount();
+
+    void incrementVehicleCount();
+    void decrementVehicleCount();
+
+    int getStatus();
+    std::string getStatusString();
+    void setStatus(int status);
+
 };
 
 class Intersection
