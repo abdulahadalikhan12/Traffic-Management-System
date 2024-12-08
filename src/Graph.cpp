@@ -1,11 +1,12 @@
 #include "../src/Graph.h"
 #include "../src/MinHeap.h"
 #include "../src/Vehicle.h"
+#include "../src/Queue.h"
 
 /* ROAD CLASS */
 
 // constructor
-Road::Road(char src, char dest, int travelTime): src(src), dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
+Road::Road(char src, char dest, int travelTime) : src(src), dest(dest), travelTime(travelTime), next(nullptr), status(1) {}
 
 // getter and setters for status
 int Road::getStatus() { return status; }
@@ -27,7 +28,7 @@ std::string Road::getStatusString()
 /* INTERSECTION CLASS */
 
 // constructor
-Intersection::Intersection(char name, int greenTime): name(name), greenTime(greenTime), roads(nullptr), next(nullptr), vehicles(nullptr) {}
+Intersection::Intersection(char name, int greenTime) : name(name), greenTime(greenTime), roads(nullptr), next(nullptr), vehicles(nullptr) {}
 
 // add vehicle to the intersection
 void Intersection::addVehicle(Vehicle *&vehicle)
@@ -321,7 +322,6 @@ void Graph::dijkstra(char start, char end)
             int weight = road->travelTime;
             int vIndex = v - 'A';
 
-
             if (dist[uIndex] != INT_MAX && dist[uIndex] + weight < dist[vIndex])
             {
                 dist[vIndex] = dist[uIndex] + weight;
@@ -365,7 +365,7 @@ char Graph::dijkstra(char start, char end, unsigned int n)
     int dist[MAX_INTERSECTIONS];
     int parent[MAX_INTERSECTIONS];
     bool visited[MAX_INTERSECTIONS];
-    MinHeap<char>::Node node; 
+    MinHeap<char>::Node node;
     MinHeap<char> pq(MAX_INTERSECTIONS);
 
     // initialize arrays
@@ -553,4 +553,101 @@ void Graph::moveVehiclesEfficiently(const std::string &vehicleName)
     vehicle->current = nextIntersection;
     vehicle->printCurrent();
     std::cout << "Vehicle " << vehicle->name << " moved to intersection " << vehicle->current << std::endl;
+}
+
+// Rerouting blocked or roads under repair
+void Graph::rerouteForBlocked(char start, char end)
+{
+    Intersection *startIntersection = findIntersection(start);
+
+    if (startIntersection == NULL)
+    {
+        std::cout << "Intersection " << start << " not found.\n";
+        return;
+    }
+
+    else
+    {
+        Road *temp = startIntersection->roads;
+        while (temp != NULL)
+        {
+            if (temp->dest == end)
+            {
+                if (temp->status == 2 || temp->status == 3)
+                { // checks only for blocked or under repair
+                    std::cout << "Road blocked " << start << " -> " << end << ". Rerouting...\n";
+                    BFS(start, end);
+                    return;
+                }
+            }
+        }
+        temp = temp->next;
+    }
+    std::cout << "Road Clear for " << start << " -> " << end << std::endl;
+}
+
+// Algorithm used for rerouting
+void Graph::BFS(char start, char end)
+{
+    bool visited[MAX_INTERSECTIONS] = {false}; // visited array
+    int parent[MAX_INTERSECTIONS];             // for path reconstruction
+    std::fill(parent, parent + MAX_INTERSECTIONS, -1);
+
+    Queue queue; // BFS queue
+
+    Intersection *startIntersection = findIntersection(start);
+    if (!startIntersection)
+    {
+        std::cout << "Intersection " << start << " not found.\n";
+        return;
+    }
+
+    // enqueue the starting intersection
+    queue.enqueue(startIntersection);
+    visited[start - 'A'] = true;
+
+    // BFS Traversal
+    while (queue.getPointers(1) != nullptr)
+    {
+        Intersection *current = queue.dequeue();
+        char currentName = current->name;
+
+        // if the destination is reached
+        if (currentName == end)
+        {
+            std::cout << "Alternate route found: ";
+            printReroutedPath(parent, start - 'A', end - 'A');
+            return;
+        }
+
+        // explore adjacent roads
+        Road *road = current->roads;
+        while (road)
+        {
+            int nextIndex = road->dest - 'A';
+
+            if (!visited[nextIndex] && road->status == 1) // only visit 'Clear' roads
+            {
+                visited[nextIndex] = true;
+                parent[nextIndex] = currentName - 'A';
+                queue.enqueue(findIntersection(road->dest));
+            }
+            road = road->next;
+        }
+    }
+
+    std::cout << "No alternate route found from " << start << " to " << end << "." << std::endl;
+}
+
+// Print the rerouted path
+void Graph::printReroutedPath(int parent[], int startIndex, int endIndex)
+{
+    if (endIndex == -1 || startIndex == endIndex)
+    {
+        std::cout << char('A' + startIndex) << " ";
+        return;
+    }
+
+    printReroutedPath(parent, startIndex, parent[endIndex]);
+    std::cout << char('A' + endIndex) << " ";
 }

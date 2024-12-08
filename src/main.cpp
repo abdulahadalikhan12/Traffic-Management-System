@@ -15,7 +15,7 @@ int main()
     graph.createVehicles("data/vehicles.csv");
     graph.simulateRoadClosure("data/road_closures.csv");
 
-    //test efficient move
+    // test efficient move
     graph.visualizeNetwork();
     graph.moveVehiclesEfficiently("V1");
 
@@ -34,7 +34,6 @@ void mainMenu()
     cout << "7. Simulate Vehicle Routing\n";
     cout << "8. Exit Simulation\n";
 }
-
 
 /*
 

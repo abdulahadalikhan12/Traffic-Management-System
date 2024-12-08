@@ -65,6 +65,9 @@ public:
     void simulateRoadClosure(const std::string &fileName);
     void updateRoadStatus(char start, char end, std::string status);
     void moveVehiclesEfficiently(const std::string &vehicleName);
+    void rerouteForBlocked(char start, char end);
+    void BFS(char start, char end);
+    void printReroutedPath(int parent[], int startIndex, int endIndex);
 };
 
 #endif // GRAPH_H
