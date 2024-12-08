@@ -91,6 +91,11 @@ void Intersection::incrementCongestionLevel()
     congestionLevel++;
 }
 
+void Intersection::decrementCongestionLevel()
+{
+    congestionLevel--;
+}
+
 /* GRAPH CLASS */
 
 // constructor
@@ -863,7 +868,7 @@ void Graph::moveVehicleToNewIntersection(const std::string &vehicleName, char ne
 {
     Vehicle *vehicle = nullptr;
     Intersection *currentIntersection = nullptr;
-
+    Intersection *prevIntersection = nullptr;
     // search for the vehicle across all intersections
     for (int i = 0; i < MAX_INTERSECTIONS; i++)
     {
@@ -876,6 +881,7 @@ void Graph::moveVehicleToNewIntersection(const std::string &vehicleName, char ne
                 {
                     vehicle = temp;
                     currentIntersection = intersections[i]; // store the current intersection
+                    prevIntersection = intersections[i-1];    // store the previous intersection
                     break;
                 }
                 temp = temp->next;
@@ -910,7 +916,8 @@ void Graph::moveVehicleToNewIntersection(const std::string &vehicleName, char ne
     {
         vehicle->printCurrent();                         // print current position
         vehicle->current = newIntersection;              // move vehicle to the new intersection
-        currentIntersection->incrementCongestionLevel(); // increase congestion
+        currentIntersection->incrementCongestionLevel(); // increase congestion at new intersection
+        prevIntersection->decrementCongestionLevel();    // decrease congestion at previous intersection
         vehicle->printCurrent();                         // print new position
         std::cout << "Vehicle " << vehicle->name << " moved to intersection " << vehicle->current << std::endl;
     }

@@ -44,6 +44,7 @@ public:
     void removeVehicle(const std::string &name);
     void printVehicles();
     void incrementCongestionLevel();
+    void decrementCongestionLevel();
 };
 
 // Graph class representing the road network
