@@ -85,6 +85,7 @@ public:
     void dijkstra(char start, char end);
     char dijkstra(char start, char end, unsigned int n); // Overloaded function
     void BFS(char start, char end);
+    void aStar(char start, char end);
 
     // Rerouting and pathfinding
     void rerouteForBlocked(char start, char end);
