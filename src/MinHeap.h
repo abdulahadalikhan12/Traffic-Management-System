@@ -10,14 +10,14 @@ class MinHeap
 public:
     struct Node
     {
-        int priority; // Key to determine order (e.g., distance, vehicle density, etc.)
-        T data;       // Generic data type (e.g., int, Road, etc.)
+        int priority; // key to determine order (e.g., distance, vehicle density, etc.)
+        T data;       // generic data type (e.g., int, Road, etc.)
     };
 
 private:
-    Node *heap;   // Array of nodes
-    int size;     // Current size of the heap
-    int capacity; // Maximum capacity of the heap
+    Node *heap;   // array of nodes
+    int size;     // current size of the heap
+    int capacity; // maximum capacity of the heap
 
     void swap(Node &a, Node &b);
     int parent(int index);

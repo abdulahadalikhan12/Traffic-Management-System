@@ -929,27 +929,28 @@ void Graph::moveVehicleToNewIntersection(const std::string &vehicleName, char ne
     }
 }
 
-//Function to find the optimal path using A* Algorithm
+// Function to find the optimal path using A* Algorithm
 void Graph::aStar(char start, char end)
 {
-    int dist[MAX_INTERSECTIONS];       // distance from source
-    int parent[MAX_INTERSECTIONS];     // path reconstruction
-    bool visited[MAX_INTERSECTIONS];   // visited array
-    MinHeap<char>::Node node;          // MinHeap Node structure
-    MinHeap<char> pq(MAX_INTERSECTIONS); 
+    int dist[MAX_INTERSECTIONS];     // distance from source
+    int parent[MAX_INTERSECTIONS];   // path reconstruction
+    bool visited[MAX_INTERSECTIONS]; // visited array
+    MinHeap<char>::Node node;        // MinHeap Node structure
+    MinHeap<char> pq(MAX_INTERSECTIONS);
 
-    std::fill(dist, dist + MAX_INTERSECTIONS, INT_MAX);     
-    std::fill(visited, visited + MAX_INTERSECTIONS, false); 
-    std::fill(parent, parent + MAX_INTERSECTIONS, -1);      
+    std::fill(dist, dist + MAX_INTERSECTIONS, INT_MAX);
+    std::fill(visited, visited + MAX_INTERSECTIONS, false);
+    std::fill(parent, parent + MAX_INTERSECTIONS, -1);
 
     int startIndex = start - 'A';
     int endIndex = end - 'A';
 
     dist[startIndex] = 0;
-    pq.insert({0, start}); 
+    pq.insert({0, start});
 
-    auto heuristic = [](char current, char target) {
-        return abs(current - target);  // Manhattan-like heuristic
+    auto heuristic = [](char current, char target)
+    {
+        return abs(current - target); // Manhattan-like heuristic
     };
 
     while (!pq.isEmpty())
@@ -958,18 +959,21 @@ void Graph::aStar(char start, char end)
         char u = current.data;
         int uIndex = u - 'A';
 
-        if (visited[uIndex]) continue;
+        if (visited[uIndex])
+            continue;
         visited[uIndex] = true;
 
-        if (u == end) break; // Reached destination
+        if (u == end)
+            break; // Reached destination
 
         Intersection *intersection = findIntersection(u);
-        if (!intersection) continue;
+        if (!intersection)
+            continue;
 
         Road *road = intersection->roads;
         while (road)
         {
-            if (road->getStatus() != 1) 
+            if (road->getStatus() != 1)
             {
                 road = road->next;
                 continue;

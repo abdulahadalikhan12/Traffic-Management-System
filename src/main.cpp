@@ -14,10 +14,8 @@ int main()
 {
     int choice = 0;
 
-    // Load initial data from CSV files
     loadData();
 
-    // Start simulation loop
     while (choice != 9)
     {
         mainMenu();
@@ -26,36 +24,36 @@ int main()
         switch (choice)
         {
         case 1:
-            // Display the network
+            // display the network
             cout << "Displaying City Traffic Network...\n";
             graph.visualizeNetwork();
             break;
         case 2:
-            // Display traffic signal status
+            // display traffic signal status
             cout << "Displaying Traffic Signal Status...\n";
             graph.visualizeSignals();
             break;
         case 3:
-            // Display congestion status
+            // display congestion status
             cout << "Displaying Congestion Status...\n";
             monitor.displayTrafficStatus();
             break;
         case 4:
-            // Display blocked roads
+            // display blocked roads
             cout << "Displaying Blocked Roads...\n";
             graph.printBlockedRoads();
             break;
         case 5:
-            // Handle emergency vehicle routing
+            // handle emergency vehicle routing
             cout << "Handling emergency vehicle routing...\n";
             // graph.handleEmergencyVehicle(); // Uncomment once implemented
             break;
         case 6:
-            // Block a road due to an accident
+            // block a road due to an accident
             handleBlockedRoad();
             break;
         case 7:
-            // Simulate vehicle routing
+            // simulate vehicle routing
             simulateVehicleRouting();
             break;
         case 8:

@@ -5,7 +5,7 @@
 #include "../src/Graph.h"
 #include "../src/TrafficMonitor.h"
 
-extern Graph graph;            // extern because it's defined in main file
+extern Graph graph; // extern because it's defined in main file
 extern TrafficMonitor monitor;
 
 int getValidChoice()

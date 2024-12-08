@@ -16,16 +16,14 @@ public:
     Vehicle *next;
 
     Vehicle(string name, char start, char end);
-    
+
     void printVehicle();
     void printCurrent();
-
 };
 
 class EmergencyVehicle : public Vehicle
 {
 public:
-
     int priority;
 
     EmergencyVehicle(string name, char start, char end, int priority = 0);
