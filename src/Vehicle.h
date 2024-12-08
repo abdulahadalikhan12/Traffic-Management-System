@@ -7,21 +7,25 @@ using namespace std;
 
 class Vehicle
 {
-protected:
+public:
     string name;
     char start;
     char end;
 
-public:
+    Vehicle *next;
+
     Vehicle(string name, char start, char end);
+    
     void printVehicle();
+
 };
 
 class EmergencyVehicle : public Vehicle
 {
+public:
+
     int priority;
 
-public:
     EmergencyVehicle(string name, char start, char end, int priority);
     void printEmergencyDetails();
 };

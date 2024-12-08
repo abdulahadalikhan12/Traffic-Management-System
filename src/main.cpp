@@ -10,9 +10,6 @@ Graph graph;
 int main()
 {
     int choice = 0;
-    graph.createIntersections("../data/traffic_signals.csv");
-    graph.createNetwork("../data/road_network.csv");
-
     /*while(choice != 8)
     {
         cout<< "------ Allah MashAllah Traffic Simulator ------\n";
@@ -60,10 +57,15 @@ int main()
 
     }*/
 
-    graph.visualizeNetwork();
-    graph.visualizeSignals();
-
+    graph.createIntersections("../data/traffic_signals.csv");
+    graph.createNetwork("../data/road_network.csv");
+    graph.createVehicles("../data/vehicles.csv");
     graph.simulateRoadClosure("../data/road_closures.csv");
+
+    //graph.printAllVehicles();
+    //graph.visualizeNetwork();
+    //graph.visualizeSignals();
+
 
     graph.dijkstra('A', 'E');
 

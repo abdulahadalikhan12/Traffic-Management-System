@@ -5,6 +5,7 @@ Vehicle::Vehicle(string name, char start, char end)
     this->name = name;
     this->start = start;
     this->end = end;
+    this->next = nullptr;
 }
 
 // print details of the vehicle
