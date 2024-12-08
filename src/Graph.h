@@ -7,17 +7,17 @@
 #include <string>
 #include "Vehicle.h"
 
-
 #define MAX_INTERSECTIONS 26 // maximum number of intersections (A-Z)
 
+// Class representing a Road between two intersections
 class Road
 {
 public:
-    int travelTime;
-    int status; // 1 = Clear, 2 = Blocked, 3 = Under Repair
-    char src;   // source intersection
-    char dest;  // destination intersection
-    Road *next;
+    int travelTime; // time taken to travel the road
+    int status;     // road status: 1 = Clear, 2 = Blocked, 3 = Under Repair
+    char src;       // source intersection
+    char dest;      // destination intersection
+    Road *next;     // pointer to the next road
 
     Road(char src, char dest, int travelTime);
 
@@ -26,16 +26,17 @@ public:
     void setStatus(int status);
 };
 
+// Class representing an Intersection in the graph
 class Intersection
 {
 public:
     int greenTime;       // green light time for the intersection
-    int congestionLevel; // congestion level
-    char name;
-    bool emergencyFlag; // flag to check if emergency is triggered
-    Intersection *next; // pointer to the next intersection
-    Road *roads;        // linked list of outgoing roads
-    Vehicle *vehicles;  // list of vehicles at this intersection
+    int congestionLevel; // current congestion level
+    char name;           // name of the intersection
+    bool emergencyFlag;  // flag to indicate if an emergency is triggered
+    Intersection *next;  // pointer to the next intersection
+    Road *roads;         // linked list of outgoing roads
+    Vehicle *vehicles;   // list of vehicles at this intersection
 
     Intersection(char name, int greenTime = 0);
 
@@ -44,36 +45,50 @@ public:
     void printVehicles();
 };
 
+// Graph class representing the road network
 class Graph
 {
 private:
-    Intersection *intersections[MAX_INTERSECTIONS]; // array of intersection pointers/adjacency list
+    Intersection *intersections[MAX_INTERSECTIONS]; // adjacency list for intersections
 
 public:
     Graph();
 
-    void addIntersection(char name, int greenTime = 0);
+    // Intersection management
     Intersection *findIntersection(char name);
+    void addIntersection(char name, int greenTime = 0);
+
+    // Road management
     void addRoad(char from, char to, int travelTime);
+    void updateRoadStatus(char start, char end, std::string status);
+    void blockRoad(char start, char end);
+    void simulateRoadClosure(const std::string &fileName);
+    void printBlockedRoads();
+
+    // Visualization
     void visualizeNetwork();
     void visualizeSignals();
-    void createIntersections(const std::string &fileName);
-    void createNetwork(const std::string &fileName);
+
+    // Vehicle management
     void createVehicles(const std::string &fileName);
     void printAllVehicles();
-    void dijkstra(char start, char end);
-    char dijkstra(char start, char end, unsigned int n);
-    void simulateRoadClosure(const std::string &fileName);
-    void updateRoadStatus(char start, char end, std::string status);
     void moveVehiclesEfficiently(const std::string &vehicleName);
-    void rerouteForBlocked(char start, char end);
+
+    // File-based network creation
+    void createIntersections(const std::string &fileName);
+    void createNetwork(const std::string &fileName);
+
+    // Routing algorithms
+    void dijkstra(char start, char end);
+    char dijkstra(char start, char end, unsigned int n); // Overloaded function
     void BFS(char start, char end);
+
+    // Rerouting and pathfinding
+    void rerouteForBlocked(char start, char end);
     void rerouteNetwork();
     void printReroutedPath(int parent[], int startIndex, int endIndex);
-    void printBlockedRoads();
-    void blockRoad(char start, char end);
-    void dfs(Intersection *current, char end, char currentPath[], int pathIndex, bool visited[], char allPaths[][100], int &pathCount);
     void findAllRoutes(char start, char end);
+    void dfs(Intersection *current, char end, char currentPath[], int pathIndex, bool visited[], char allPaths[][100], int &pathCount);
 };
 
 #endif // GRAPH_H
