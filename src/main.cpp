@@ -1,12 +1,39 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <limits>
 #include "../src/Graph.h"
 #include "../src/TrafficMonitor.h"
 using namespace std;
 
 Graph graph;
 TrafficMonitor monitor;
+
+int getValidChoice()
+{
+    int choice;
+    while (true)
+    {
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        if (cin.fail()) // check if the input is invalid
+        {
+            cin.clear();                                         // clear the error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // ignore the rest of the line
+            cout << "Invalid input. Please enter a number between 1 and 9.\n";
+        }
+        else if (choice >= 1 && choice <= 9)
+        {
+            break; // valid choice
+        }
+        else
+        {
+            cout << "Invalid choice. Please enter a number between 1 and 9.\n";
+        }
+    }
+    return choice;
+}
 
 void mainMenu()
 {
@@ -22,9 +49,43 @@ void mainMenu()
     cout << "9. Exit Simulation\n\n";
 }
 
+bool isValidIntersection(char intersection)
+{
+    return intersection >= 'A' && intersection <= 'Z';
+}
+
+bool isValidVehicleName(const string &vehicleName)
+{
+    if (vehicleName.length() < 2 || vehicleName[0] != 'V')
+        return false;
+    for (size_t i = 1; i < vehicleName.length(); ++i)
+    {
+        if (!isdigit(vehicleName[i]))
+            return false;
+    }
+    return true;
+}
+
+void inputHandlingVehicleMovement(string &vehicleName, char &newIntersection)
+{
+    do
+    {
+        cout << "Enter vehicle name (e.g., V1): ";
+        cin >> vehicleName;
+        if (!isValidVehicleName(vehicleName))
+            cout << "Invalid vehicle name. Please use the format 'V<number>' (e.g., V1).\n";
+    } while (!isValidVehicleName(vehicleName));
+
+    do
+    {
+        cout << "Enter new intersection (A-Z): ";
+        cin >> newIntersection;
+    } while (!isValidIntersection(newIntersection));
+}
+
 void inputHandlingBlockRoad(char &input1, char &input2)
 {
-    while ((input1 < 'A' || input1 > 'Z') || (input2 < 'A' || input2 > 'Z'))
+    while (!isValidIntersection(input1) || !isValidIntersection(input2))
     {
         cout << "Invalid input. Please enter valid road intersections (A-Z): ";
         cout << "Enter First Intersection: ";
@@ -34,16 +95,71 @@ void inputHandlingBlockRoad(char &input1, char &input2)
     }
 }
 
-void inputHandlingVehicleMovement(string &vehicleName, char &newIntersection)
+void loadData()
 {
-    cout << "Enter vehicle name (e.g., V1): ";
-    cin >> vehicleName;
+    if (!graph.createIntersections("data/traffic_signals.csv"))
+    {
+        cerr << "Error: Failed to load traffic signals data.\n";
+        exit(1);
+    }
+    if (!graph.createNetwork("data/road_network.csv"))
+    {
+        cerr << "Error: Failed to load road network data.\n";
+        exit(1);
+    }
+    if (!graph.createVehicles("data/vehicles.csv"))
+    {
+        cerr << "Error: Failed to load vehicles data.\n";
+        exit(1);
+    }
+    if (!graph.simulateRoadClosure("data/road_closures.csv"))
+    {
+        cerr << "Error: Failed to load road closures data.\n";
+        exit(1);
+    }
+}
 
+void handleBlockedRoad()
+{
+    char start, end;
+    cout << "Enter road to block (start, end): ";
+    cin >> start >> end;
+    inputHandlingBlockRoad(start, end);
+
+    cout << "Blocking road " << start << " -> " << end << endl;
+    graph.blockRoad(start, end);         // Block the road
+    graph.rerouteForBlocked(start, end); // Reroute vehicles
+}
+
+void simulateVehicleRouting()
+{
+    char starting, ending;
+
+    // Input validation for starting intersection
     do
     {
-        cout << "Enter new intersection (A-Z): ";
-        cin >> newIntersection;
-    } while (newIntersection < 'A' || newIntersection > 'Z');
+        cout << "Enter Starting Intersection (A-Z): ";
+        cin >> starting;
+    } while (!isValidIntersection(starting)); // Check if the input is valid
+
+    // Input validation for ending intersection
+    do
+    {
+        cout << "Enter Ending Intersection (A-Z): ";
+        cin >> ending;
+    } while (!isValidIntersection(ending)); // Check if the input is valid
+
+    cout << "Simulating route from " << starting << " to " << ending << endl;
+    graph.findAllRoutes(starting, ending);
+}
+
+void manuallyMoveVehicle()
+{
+    string vehicleName;
+    char newIntersection;
+    inputHandlingVehicleMovement(vehicleName, newIntersection);
+    cout << "Moving vehicle " << vehicleName << " to intersection " << newIntersection << endl;
+    graph.moveVehicleToNewIntersection(vehicleName, newIntersection);
 }
 
 int main()
@@ -51,24 +167,13 @@ int main()
     int choice = 0;
 
     // Load initial data from CSV files
-    graph.createIntersections("data/traffic_signals.csv");
-    graph.createNetwork("data/road_network.csv");
-    graph.createVehicles("data/vehicles.csv");
-    graph.simulateRoadClosure("data/road_closures.csv");
-
-    // test findAllRoutes
-    // graph.findAllRoutes('A', 'D');
-
-
-    string vehicleName;   // Declare the variable here to use across the switch cases
-    char newIntersection; // Declare the variable here for vehicle movement
+    loadData();
 
     // Start simulation loop
     while (choice != 9)
     {
         mainMenu();
-        cout << "Enter your choice: ";
-        cin >> choice;
+        choice = getValidChoice();
 
         switch (choice)
         {
@@ -99,32 +204,15 @@ int main()
             break;
         case 6:
             // Block a road due to an accident
-            char start, end;
-            cout << "Enter road to block (start, end): ";
-            cin >> start >> end;
-            inputHandlingBlockRoad(start, end);
-
-            cout << "Blocking road " << start << " -> " << end << endl;
-            graph.blockRoad(start, end);         // Block the road
-            graph.rerouteForBlocked(start, end); // Reroute vehicles
+            handleBlockedRoad();
             break;
         case 7:
             // Simulate vehicle routing
-            char starting, ending;
-            cout << "Enter Starting Intersection (A-Z): ";
-            cin >> starting;
-            cout << "Enter Ending Intersection (A-Z): ";
-            cin >> ending;
-            inputHandlingBlockRoad(starting, ending);
-
-            cout << "Simulating route from " << starting << " to " << ending << endl;
-            graph.findAllRoutes(starting, ending);
+            simulateVehicleRouting();
             break;
         case 8:
             // manually move a vehicle
-            inputHandlingVehicleMovement(vehicleName, newIntersection);
-            cout << "Moving vehicle " << vehicleName << " to intersection " << newIntersection << endl;
-            graph.moveVehicleToNewIntersection(vehicleName, newIntersection);
+            manuallyMoveVehicle();
             break;
         case 9:
             cout << "Exiting Simulation\n";
