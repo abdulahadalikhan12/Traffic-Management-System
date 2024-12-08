@@ -644,25 +644,30 @@ void Graph::BFS(char start, char end)
     std::cout << "No alternate route found from " << start << " to " << end << "." << std::endl<<std::endl;
 }
 
-//Checking the whole traffic network for blocked/repairing roads and rerouting
-void Graph::rerouteNetwork(){
+// Checking the whole traffic network for blocked/repairing roads and rerouting
+void Graph::rerouteNetwork()
+{
+    // Iterate through all intersections
     for (int i = 0; i < MAX_INTERSECTIONS; ++i)
     {
         if (intersections[i])
-        {
+        { // Ensure the intersection is valid
             Road *road = intersections[i]->roads;
+
+            // Iterate through each road connected to the intersection
             while (road)
             {
-                if(road -> status == 2 || road -> status == 3){
-                    std::cout << "Rerouting required for road " 
-                          << intersections[i] -> name << " -> " 
-                          << road -> dest << "..." << std::endl;
+                // If the road is blocked (status 2) or under repair (status 3), reroute traffic
+                if (road->status == 2 || road->status == 3)
+                {
+                    std::cout << "Rerouting required for road "
+                              << intersections[i]->name << " -> "
+                              << road->dest << "..." << std::endl;
 
-                    //Rerouting Road (Go to BFS function and find printReroutedPath, that's where you'll implement
-                    //your functionality Muneeb g)
-                    rerouteForBlocked(intersections[i] -> name, road -> dest);
+                    // Call rerouting logic for blocked or under repair roads
+                    rerouteForBlocked(intersections[i]->name, road->dest);
                 }
-                road = road->next;
+                road = road->next; // Move to the next road
             }
         }
     }
@@ -731,4 +736,94 @@ void Graph::printBlockedRoads(){
         std::cout<<"No blocked roads found.\n";
     }
     std::cout<<std::endl;
+}
+
+// Helper function for Depth-First Search (DFS) without STL
+void Graph::dfs(Intersection *current, char end, char currentPath[], int pathIndex, bool visited[], char allPaths[][100], int &pathCount)
+{
+    // Mark the current intersection as visited
+    visited[current->name - 'A'] = true;
+
+    // Add the current intersection to the path
+    currentPath[pathIndex] = current->name;
+    pathIndex++;
+
+    // If the destination is reached, store the path
+    if (current->name == end)
+    {
+        // Save the current path to allPaths
+        for (int i = 0; i < pathIndex; i++)
+        {
+            allPaths[pathCount][i] = currentPath[i];
+        }
+        allPaths[pathCount][pathIndex] = '\0'; // Null-terminate the path
+        pathCount++;
+    }
+    else
+    {
+        // Explore all connected roads (adjacent intersections)
+        Road *road = current->roads;
+        while (road)
+        {
+            Intersection *nextIntersection = findIntersection(road->dest);
+
+            // If not visited, continue DFS
+            if (!visited[nextIntersection->name - 'A'])
+            {
+                dfs(nextIntersection, end, currentPath, pathIndex, visited, allPaths, pathCount);
+            }
+            road = road->next; // Move to the next connected road
+        }
+    }
+
+    // Backtrack: Unmark the current intersection as visited
+    visited[current->name - 'A'] = false;
+}
+
+// Function to find and display all routes between two intersections
+void Graph::findAllRoutes(char start, char end)
+{
+    Intersection *startIntersection = findIntersection(start);
+
+    // Error handling: Check if the start or end intersections exist
+    if (!startIntersection)
+    {
+        cout << "Start intersection " << start << " not found.\n";
+        return;
+    }
+    if (!findIntersection(end))
+    {
+        cout << "End intersection " << end << " not found.\n";
+        return;
+    }
+
+    // Variables for DFS
+    char currentPath[100];                     // Array to store the current path
+    char allPaths[100][100];                   // Array to store all paths
+    bool visited[MAX_INTERSECTIONS] = {false}; // Visited array
+    int pathCount = 0;                         // Count of paths found
+    int pathIndex = 0;                         // Current index in the path
+
+    // Start DFS from the starting intersection
+    dfs(startIntersection, end, currentPath, pathIndex, visited, allPaths, pathCount);
+
+    // Display all paths
+    if (pathCount == 0)
+    {
+        cout << "No routes found from " << start << " to " << end << ".\n";
+    }
+    else
+    {
+        cout << "All routes from " << start << " to " << end << ":\n";
+        for (int i = 0; i < pathCount; i++)
+        {
+            for (int j = 0; allPaths[i][j] != '\0'; j++)
+            {
+                cout << allPaths[i][j];
+                if (allPaths[i][j + 1] != '\0')
+                    cout << " -> ";
+            }
+            cout << endl;
+        }
+    }
 }

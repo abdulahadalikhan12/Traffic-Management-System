@@ -72,6 +72,8 @@ public:
     void printReroutedPath(int parent[], int startIndex, int endIndex);
     void printBlockedRoads();
     void blockRoad(char start, char end);
+    void dfs(Intersection *current, char end, char currentPath[], int pathIndex, bool visited[], char allPaths[][100], int &pathCount);
+    void findAllRoutes(char start, char end);
 };
 
 #endif // GRAPH_H

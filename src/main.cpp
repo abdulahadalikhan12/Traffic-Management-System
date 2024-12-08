@@ -47,10 +47,14 @@ int main()
     graph.createVehicles("data/vehicles.csv");
     graph.simulateRoadClosure("data/road_closures.csv");
 
-    string vehicleName;   // Declare the variable here to use across the switch cases
-    char newIntersection; // Declare the variable here for vehicle movement
+    //test findAllRoutes
+    graph.findAllRoutes('A', 'D');
+
+    //string vehicleName;   // Declare the variable here to use across the switch cases
+    //char newIntersection; // Declare the variable here for vehicle movement
 
     // Start simulation loop
+    /*
     while (choice != 9)
     {
         mainMenu();
@@ -106,6 +110,6 @@ int main()
             cout << "Invalid Choice\n";
         }
     }
-
+    */
     return 0;
 }
