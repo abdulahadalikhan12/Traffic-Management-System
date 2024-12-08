@@ -401,3 +401,97 @@ void Graph::updateRoadStatus(char start, char end, std::string status)
         }
     }
 }
+
+void Graph::moveVehiclesEfficiently(int n)
+{
+    // move all vehicles to next n closest intersections
+
+    for (int i = 0; i < MAX_INTERSECTIONS; i++)
+    {
+        if (intersections[i])
+        {
+            Vehicle *temp = intersections[i]->vehicles;
+            while (temp)
+            {
+                std::string name = temp->name;
+                char start = temp->start;
+                char end = temp->end;
+                int dist[MAX_INTERSECTIONS];         // Distance array
+                int parent[MAX_INTERSECTIONS];       // Parent array for path reconstruction
+                bool visited[MAX_INTERSECTIONS];     // Visited array
+                MinHeap<char>::Node node;            // MinHeap Node structure
+                MinHeap<char> pq(MAX_INTERSECTIONS); // Min-Heap priority queue
+
+                std::fill(dist, dist + MAX_INTERSECTIONS, INT_MAX);     // Initialize distances to infinity
+                std::fill(visited, visited + MAX_INTERSECTIONS, false); // Initialize visited array to false
+                std::fill(parent, parent + MAX_INTERSECTIONS, -1);      // Initialize parent array to -1
+
+                int startIndex = start - 'A';
+                int endIndex = end - 'A';
+
+                dist[startIndex] = 0;
+
+                // Single-source shortest path
+                pq.insert({0, start}); // Insert the source node into the priority queue
+
+                while (!pq.isEmpty())
+                {
+                    auto current = pq.extractMin();
+                    char u = current.data; // Node data (intersection name)
+                    int uIndex = u - 'A';
+
+                    if (visited[uIndex])
+                        continue; // Skip if already visited
+                    visited[uIndex] = true;
+
+                    Intersection *intersection = findIntersection(u);
+                    if (!intersection)
+                        continue;
+
+                    Road *road = intersection->roads;
+                    while (road)
+                    {
+                        char v = road->dest;
+                        int weight = road->travelTime;
+                        int vIndex = v - 'A';
+
+                        if (dist[uIndex] != INT_MAX && dist[uIndex] + weight < dist[vIndex])
+                        {
+                            dist[vIndex] = dist[uIndex] + weight;
+                            parent[vIndex] = uIndex;
+                            pq.insert({dist[vIndex], v});
+                        }
+                        road = road->next;
+                    }
+                }
+
+                // Output the shortest path and its distance
+                if (dist[endIndex] == INT_MAX)
+                {
+                    std::cout << "No path found from " << start << " to " << end << "." << std::endl;
+                }
+                else
+                {
+                    std::cout << "Shortest path from " << start << " to " << end << " is " << dist[endIndex] << "s." << std::endl;
+                    std::cout << "Path: ";
+                    char path[MAX_INTERSECTIONS];
+                    int pathLength = 0;
+                    int current = endIndex;
+
+                    while (current != -1)
+                    {
+                        path[pathLength++] = 'A' + current;
+                        current = parent[current];
+                    }
+
+                    for (int i = pathLength - 1; i >= 0; i--)
+                    {
+                        std::cout << path[i] << " ";
+                    }
+                    std::cout << std::endl;
+                }
+                temp = temp->next;
+            }
+        }
+    }
+}

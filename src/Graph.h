@@ -63,6 +63,7 @@ public:
     void dijkstra(char start, char end);
     void simulateRoadClosure(const std::string &fileName);
     void updateRoadStatus(char start, char end, std::string status);
+    void moveVehiclesEfficiently(int n);
 };
 
 #endif // GRAPH_H
