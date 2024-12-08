@@ -10,7 +10,19 @@ Graph graph;
 int main()
 {
     int choice = 0;
-    /*while(choice != 8)
+    graph.createIntersections("data/traffic_signals.csv");
+    graph.createNetwork("data/road_network.csv");
+    graph.createVehicles("data/vehicles.csv");
+    graph.simulateRoadClosure("data/road_closures.csv");
+
+    //test efficient move
+    graph.visualizeNetwork();
+    graph.moveVehiclesEfficiently("V1");
+
+    return 0;
+}
+
+/*while(choice != 8)
     {
         cout<< "------ Allah MashAllah Traffic Simulator ------\n";
         cout << "1. Display City Traffic Network\n";
@@ -56,16 +68,3 @@ int main()
         }
 
     }*/
-
-    graph.createIntersections("data/traffic_signals.csv");
-    graph.createNetwork("data/road_network.csv");
-    graph.createVehicles("data/vehicles.csv");
-    graph.simulateRoadClosure("data/road_closures.csv");
-    //graph.moveVehiclesEfficiently();
-    char temp = graph.dijkstra('A', 'E', 1);
-//    graph.visualizeNetwork();
-  //  graph.visualizeSignals();
-
-    //graph.dijkstra('A', 'E');
-    return 0;
-}

@@ -18,6 +18,7 @@ public:
     Vehicle(string name, char start, char end);
     
     void printVehicle();
+    void printCurrent();
 
 };
 

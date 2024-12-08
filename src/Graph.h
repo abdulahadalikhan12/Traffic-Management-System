@@ -38,7 +38,7 @@ public:
 
     Intersection(char name, int greenTime = 0);
 
-    void addVehicle(Vehicle *vehicle);
+    void addVehicle(Vehicle *&vehicle);
     void removeVehicle(const std::string &name);
     void printVehicles();
 };
@@ -64,7 +64,7 @@ public:
     char dijkstra(char start, char end, unsigned int n);
     void simulateRoadClosure(const std::string &fileName);
     void updateRoadStatus(char start, char end, std::string status);
-    void moveVehiclesEfficiently();
+    void moveVehiclesEfficiently(const std::string &vehicleName);
 };
 
 #endif // GRAPH_H

@@ -17,6 +17,11 @@ void Vehicle::printVehicle()
     cout << "End: " << end << endl;
 }
 
+void Vehicle::printCurrent()
+{
+    cout << "Current: " << current << endl;
+}
+
 // constructor for EmergencyVehicle
 EmergencyVehicle::EmergencyVehicle(string name, char start, char end, int priority) : Vehicle(name, start, end), priority(priority) {}
 
