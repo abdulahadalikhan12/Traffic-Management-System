@@ -10,6 +10,7 @@ class Vehicle
 public:
     string name;
     char start;
+    char current;
     char end;
 
     Vehicle *next;

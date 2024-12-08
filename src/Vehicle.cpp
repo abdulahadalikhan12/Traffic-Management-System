@@ -3,7 +3,7 @@
 Vehicle::Vehicle(string name, char start, char end)
 {
     this->name = name;
-    this->start = start;
+    this->start = this->current = start;
     this->end = end;
     this->next = nullptr;
 }
@@ -13,6 +13,7 @@ void Vehicle::printVehicle()
 {
     cout << "Vehicle Name: " << name << endl;
     cout << "Start: " << start << endl;
+    cout << "Current: " << current << endl;
     cout << "End: " << end << endl;
 }
 
