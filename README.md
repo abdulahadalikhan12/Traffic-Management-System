@@ -143,3 +143,53 @@ The **Vehicle** class represents a vehicle in the simulation. It stores the vehi
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
+
+## Screenshots
+
+Here are some screenshots showcasing the **Traffic Simulation System** in action:
+
+### 1. **Traffic Network Visualization**
+This screenshot shows the visualization of the traffic network, including intersections, roads, and their statuses.
+
+![Traffic Network Visualization](assets/Network.PNG)  
+*Description*: A visual representation of intersections and roads in the traffic network, showing their connections.
+
+### 2. **Vehicle Movement**
+This screenshot illustrates the movement of a vehicle from one intersection to another, demonstrating the simulation of traffic flow.
+
+![Vehicle Movement](assets/moveVehicle.PNG)  
+*Description*: A vehicle being moved from Intersection 'A' to Intersection 'B' based on the current pathfinding algorithm.
+
+### 3. **Road Closure Simulation**
+This screenshot shows the simulation of road closures and rerouting of vehicles to alternative paths.
+
+![Road Closure Simulation](assets/toBlock.PNG)  
+*Description*: The simulation after a road closure is applied, with the system rerouting vehicles to their next available intersection.
+
+### 4. **Pathfinding Results**
+This screenshot shows the results of **Dijkstra's Algorithm** or **A\*** in finding the shortest path between two intersections.
+
+![Pathfinding Results](assets/PossibleRoutes.PNG)  
+*Description*: A display showing the shortest path between two intersections, along with the associated travel times and road statuses.
+
+### 5. **Blocked Roads**
+This screenshot demonstrates the system's detection of blocked roads.
+
+![Blocked Roads](assets/BlockedRoads.PNG)
+
+*Description*: The system detects blocked roads and updates the traffic network to reflect the road status.
+
+### 6. **Main Menu**
+This screenshot shows the main menu of the traffic simulation system.
+
+![Main Menu](assets/MainMenu.PNG)
+
+*Description*: The main menu provides options for managing intersections, roads, vehicles, and running simulations.
+---
+
+### How to Add Your Own Screenshots:
+1. Take a screenshot of the relevant part of the traffic simulation system (e.g., the terminal output, visualizations).
+2. Save the image in the `assets/` folder or a similar folder within your project.
+3. Add the image path to the `![Description](path/to/your/image.png)` tag in the appropriate screenshot section above.
+
+---
